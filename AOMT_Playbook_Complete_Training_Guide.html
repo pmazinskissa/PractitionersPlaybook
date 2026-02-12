@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AOMT Playbook Complete Training Guide | SSA & Company</title>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+:root{--blue-deep:#003399;--blue-med:#0A7CC1;--teal:#0088A1;--teal-dark:#336179;--gray-blue:#8CA3B2;--green:#186037;--orange:#DE4702;--bg:#F7F8FB;--bg-card:#FFF;--bg-sidebar:#0B1D3A;--text-primary:#1A2332;--text-secondary:#4A5568;--text-muted:#718096;--border:#E2E8F0;--blue-5:rgba(0,51,153,.05);--blue-10:rgba(0,51,153,.10);--blue-15:rgba(0,51,153,.15);--teal-5:rgba(0,136,161,.06);--teal-10:rgba(0,136,161,.10);--orange-5:rgba(222,71,2,.05);--orange-10:rgba(222,71,2,.10);--green-5:rgba(24,96,55,.05);--green-10:rgba(24,96,55,.10)}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{font-family:'Avenir Next LT Pro','Avenir Next','Avenir','Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text-primary);line-height:1.65;font-size:15px;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--gray-blue);border-radius:3px}::-webkit-scrollbar-thumb:hover{background:var(--teal-dark)}
+.app-layout{display:flex;min-height:100vh}
+.sidebar{width:280px;min-width:280px;background:var(--bg-sidebar);position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;display:flex;flex-direction:column;transition:transform .3s ease}
+.sidebar-header{padding:24px 20px 16px;border-bottom:1px solid rgba(255,255,255,.08)}
+.sidebar-logo{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--teal);margin-bottom:4px}
+.sidebar-title{font-size:17px;font-weight:700;color:#fff;line-height:1.3}
+.sidebar-subtitle{font-size:12px;color:var(--gray-blue);margin-top:4px}
+.sidebar-progress{padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.08)}
+.progress-bar-bg{height:4px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden;margin-top:8px}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--blue-med));border-radius:2px;transition:width .6s cubic-bezier(.22,1,.36,1)}
+.progress-label{font-size:12px;color:var(--gray-blue);display:flex;justify-content:space-between}
+.sidebar-nav{padding:12px 0;flex:1;overflow-y:auto}
+.nav-phase{padding:8px 20px 4px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-top:8px}
+.nav-item{display:flex;align-items:flex-start;padding:7px 20px;cursor:pointer;transition:all .2s;border-left:3px solid transparent;gap:10px}
+.nav-item:hover{background:rgba(255,255,255,.04)}
+.nav-item.active{background:rgba(0,136,161,.12);border-left-color:var(--teal)}
+.nav-dot{width:20px;height:20px;min-width:20px;border-radius:50%;border:2px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:rgba(255,255,255,.3);margin-top:2px;transition:all .3s}
+.nav-dot.completed{background:var(--teal);border-color:var(--teal);color:#fff}
+.nav-dot.active{border-color:var(--teal);color:var(--teal);box-shadow:0 0 0 3px rgba(0,136,161,.2)}
+.nav-label{font-size:12px;color:rgba(255,255,255,.55);line-height:1.35;transition:color .2s}
+.nav-item.active .nav-label{color:#fff;font-weight:600}
+.nav-item:hover .nav-label{color:rgba(255,255,255,.8)}
+.main-content{margin-left:280px;flex:1;min-height:100vh}
+.top-bar{position:sticky;top:0;z-index:50;background:rgba(247,248,251,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.breadcrumb-bar{display:flex;height:36px;overflow:hidden}
+.breadcrumb-tab{padding:0 16px;font-size:11px;font-weight:600;letter-spacing:.5px;display:flex;align-items:center;white-space:nowrap}
+.breadcrumb-tab.phase{background:var(--blue-deep);color:rgba(255,255,255,.9)}
+.breadcrumb-tab.section{background:var(--teal-dark);color:rgba(255,255,255,.85)}
+.breadcrumb-tab.active-section{background:var(--teal);color:#fff}
+.breadcrumb-tab.chapter{background:var(--blue-med);color:#fff;margin-left:auto}
+.hero{background:linear-gradient(135deg,var(--bg-sidebar) 0%,var(--teal-dark) 50%,var(--blue-deep) 100%);padding:64px 48px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;right:-20%;width:60%;height:200%;background:radial-gradient(ellipse,rgba(0,136,161,.15) 0%,transparent 70%);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--teal),transparent)}
+.hero-eyebrow{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--teal);margin-bottom:12px}
+.hero h1{font-size:36px;font-weight:800;color:#fff;line-height:1.15;margin-bottom:16px;max-width:700px}
+.hero p{font-size:16px;color:var(--gray-blue);max-width:640px;line-height:1.6}
+.hero-stats{display:flex;gap:32px;margin-top:32px}
+.hero-stat{text-align:center}
+.hero-stat-num{font-size:28px;font-weight:800;color:var(--teal)}
+.hero-stat-label{font-size:11px;color:var(--gray-blue);text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+.content-area{padding:0 48px 80px;max-width:920px}
+.section-block{margin-top:48px;scroll-margin-top:60px}
+.phase-label{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--teal);margin-bottom:8px;padding:4px 12px;background:var(--teal-5);border-radius:4px}
+.section-title{font-size:28px;font-weight:800;color:var(--blue-deep);line-height:1.2;margin-bottom:16px;letter-spacing:-.3px}
+.section-intro{font-size:15.5px;color:var(--text-secondary);line-height:1.7;margin-bottom:32px;max-width:780px}
+.step-header{display:flex;align-items:center;gap:14px;margin:40px 0 20px;padding-bottom:12px;border-bottom:2px solid var(--blue-15)}
+.step-number{width:36px;height:36px;min-width:36px;border-radius:50%;background:var(--blue-deep);color:#fff;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.step-title{font-size:20px;font-weight:700;color:var(--blue-deep)}
+.sub-header{font-size:16px;font-weight:700;color:var(--teal-dark);margin:28px 0 12px;padding-left:12px;border-left:3px solid var(--teal)}
+.sub-header-sm{font-size:14px;font-weight:700;color:var(--text-primary);margin:20px 0 8px}
+.body-text{font-size:14.5px;color:var(--text-secondary);line-height:1.7;margin:8px 0}
+.body-text strong{color:var(--text-primary)}
+.bullet-list{padding-left:20px;margin:8px 0}
+.bullet-list li{margin:6px 0;font-size:14px;color:var(--text-secondary);line-height:1.6}
+.bullet-list li strong{color:var(--text-primary)}
+.prompt-block{background:linear-gradient(135deg,var(--blue-5),rgba(10,124,193,.04));border:1px solid var(--blue-15);border-left:4px solid var(--blue-deep);border-radius:0 8px 8px 0;padding:16px 20px;margin:12px 0 16px}
+.prompt-label{display:inline-block;font-size:11px;font-weight:700;font-style:italic;color:var(--blue-deep);letter-spacing:.5px;margin-bottom:8px;text-transform:uppercase}
+.prompt-text{font-size:14px;color:var(--text-primary);line-height:1.6;font-style:italic}
+.ai-insight{background:linear-gradient(135deg,var(--teal-5),rgba(10,124,193,.03));border:1px solid var(--teal-10);border-radius:8px;padding:16px 20px;margin:16px 0;position:relative}
+.ai-insight::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--teal),var(--blue-med));border-radius:8px 8px 0 0}
+.ai-insight-label{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.ai-insight p{font-size:14px;color:var(--text-secondary);line-height:1.65}
+.verify-box{background:var(--orange-5);border:1px solid var(--orange-10);border-left:4px solid var(--orange);border-radius:0 8px 8px 0;padding:16px 20px;margin:16px 0}
+.verify-label{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--orange);margin-bottom:6px}
+.verify-box p{font-size:14px;color:var(--text-secondary);line-height:1.65}
+.principle-box{background:linear-gradient(135deg,var(--green-5),rgba(0,136,161,.03));border:2px solid var(--green);border-radius:8px;padding:18px 22px;margin:20px 0;position:relative}
+.principle-box::before{content:'KEY PRINCIPLE';position:absolute;top:-10px;left:16px;background:var(--green);color:#fff;font-size:10px;font-weight:700;letter-spacing:1.5px;padding:3px 10px;border-radius:4px}
+.principle-box p{font-size:14.5px;color:var(--text-primary);line-height:1.7;font-weight:500}
+.example-block{background:var(--green-5);border:1px solid var(--green-10);border-radius:8px;padding:16px 20px;margin:16px 0}
+.example-label{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);margin-bottom:6px}
+.example-block p{font-size:14px;color:var(--text-secondary);line-height:1.65}
+.metro-callout{background:var(--blue-5);border:1px solid var(--blue-10);border-radius:8px;padding:14px 18px;margin:12px 0}
+.metro-label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--blue-deep);margin-bottom:4px}
+.metro-callout p{font-size:13.5px;color:var(--text-secondary);line-height:1.6}
+.table-wrap{margin:16px 0;border-radius:8px;overflow:hidden;border:1px solid var(--border);overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{background:var(--blue-deep);color:#fff;padding:10px 14px;text-align:left;font-weight:600;font-size:12px;letter-spacing:.3px}
+td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text-secondary)}
+tr:nth-child(even) td{background:var(--blue-5)}
+tr:last-child td{border-bottom:none}
+.exercise-block{background:var(--bg-card);border:2px solid var(--blue-med);border-radius:12px;padding:24px;margin:24px 0;position:relative}
+.exercise-badge{position:absolute;top:-12px;left:20px;background:var(--blue-med);color:#fff;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:4px 14px;border-radius:12px}
+.exercise-title{font-size:18px;font-weight:700;color:var(--blue-deep);margin:8px 0 12px}
+.exercise-content{font-size:14px;color:var(--text-secondary);line-height:1.65}
+.exercise-content ol,.exercise-content ul{padding-left:20px;margin:8px 0}
+.exercise-content li{margin:6px 0}
+.reveal-btn{display:inline-flex;align-items:center;gap:8px;margin-top:16px;padding:10px 20px;background:var(--blue-deep);color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit}
+.reveal-btn:hover{background:var(--blue-med);transform:translateY(-1px)}
+.stop-line{background:linear-gradient(90deg,var(--orange),var(--blue-med));color:#fff;padding:10px 18px;border-radius:6px;margin:16px 0;font-size:13px;font-weight:600;text-align:center}
+.answer-block{margin-top:16px;padding:16px 20px;background:var(--green-5);border:1px solid var(--green-10);border-radius:8px;font-size:14px;color:var(--text-secondary);line-height:1.65;animation:fadeIn .4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.complete-btn{display:inline-flex;align-items:center;gap:8px;margin-top:24px;padding:12px 24px;background:var(--green);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit}
+.complete-btn:hover{background:#1a7a42;transform:translateY(-1px);box-shadow:0 4px 12px rgba(24,96,55,.3)}
+.complete-btn.done{background:var(--gray-blue);cursor:default}
+.complete-btn.done:hover{transform:none;box-shadow:none}
+.quote-block{background:var(--blue-5);border-left:4px solid var(--blue-med);padding:14px 18px;margin:12px 0;border-radius:0 6px 6px 0;font-size:14px;color:var(--text-primary);line-height:1.6}
+.section-divider{height:1px;background:linear-gradient(90deg,var(--border),var(--blue-15),var(--border));margin:40px 0}
+.compare-block{margin:16px 0;display:flex;gap:0;border-radius:8px;overflow:hidden;border:1px solid var(--border)}
+.compare-side{flex:1;padding:16px 18px}
+.compare-bad{background:rgba(222,71,2,.04);border-right:1px solid var(--border)}
+.compare-good{background:var(--green-5)}
+.compare-label{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px}
+.compare-bad .compare-label{color:var(--orange)}
+.compare-good .compare-label{color:var(--green)}
+.compare-side p{font-size:13.5px;color:var(--text-secondary);line-height:1.55}
+.numbered-item{display:flex;gap:12px;margin:8px 0;align-items:flex-start}
+.num-badge{width:24px;height:24px;min-width:24px;border-radius:50%;background:var(--blue-deep);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:2px}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:24px;margin:20px 0;box-shadow:0 1px 3px rgba(0,0,0,.03)}
+.card-title{font-size:18px;font-weight:700;color:var(--blue-deep);margin-bottom:12px}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin:24px 0}
+.checklist{margin:16px 0}
+.check-item{display:flex;align-items:flex-start;gap:10px;padding:6px 0;font-size:14px;color:var(--text-secondary);cursor:pointer}
+.check-box{width:20px;height:20px;min-width:20px;border:2px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all .2s}
+.check-box.checked{background:var(--green);border-color:var(--green);color:#fff}
+.collapsible-section{margin:20px 0;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.collapsible-header{background:var(--blue-5);padding:14px 18px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:all .2s}
+.collapsible-header:hover{background:var(--blue-10)}
+.collapsible-title{font-size:15px;font-weight:700;color:var(--blue-deep)}
+.collapsible-icon{font-size:18px;color:var(--blue-deep);transition:transform .3s}
+.collapsible-icon.open{transform:rotate(180deg)}
+.collapsible-body{padding:18px;background:var(--bg-card);display:none}
+.collapsible-body.open{display:block;animation:slideDown .3s ease}
+@keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+.glossary-panel{position:fixed;right:0;top:0;width:360px;height:100vh;background:var(--bg-card);border-left:2px solid var(--border);z-index:200;overflow-y:auto;transform:translateX(100%);transition:transform .3s ease;box-shadow:-4px 0 16px rgba(0,0,0,.1)}
+.glossary-panel.open{transform:translateX(0)}
+.glossary-close{position:absolute;top:16px;right:16px;width:32px;height:32px;border:none;background:var(--border);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:var(--text-muted)}
+.glossary-close:hover{background:var(--orange);color:#fff}
+.glossary-header{padding:24px 24px 16px;border-bottom:1px solid var(--border)}
+.glossary-search{width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-family:inherit;margin-top:12px}
+.glossary-search:focus{outline:none;border-color:var(--teal)}
+.glossary-content{padding:16px 24px}
+.glossary-term{margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.glossary-term-name{font-size:15px;font-weight:700;color:var(--blue-deep);margin-bottom:6px;cursor:pointer}
+.glossary-term-name:hover{color:var(--teal)}
+.glossary-term-def{font-size:13px;color:var(--text-secondary);line-height:1.6}
+.glossary-btn{position:fixed;bottom:24px;right:24px;width:56px;height:56px;border-radius:50%;background:var(--blue-deep);color:#fff;border:none;cursor:pointer;font-size:20px;font-weight:700;box-shadow:0 4px 16px rgba(0,51,153,.3);z-index:150;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.glossary-btn:hover{background:var(--teal);transform:scale(1.1)}
+.nav-footer{padding:12px 20px;border-top:1px solid rgba(255,255,255,.08);display:flex;gap:8px}
+.nav-prev,.nav-next{flex:1;padding:8px 12px;border:1px solid rgba(255,255,255,.15);border-radius:6px;background:transparent;color:rgba(255,255,255,.6);font-size:11px;font-weight:600;cursor:pointer;text-align:center;transition:all .2s;font-family:inherit}
+.nav-prev:hover,.nav-next:hover{background:rgba(255,255,255,.06);color:#fff;border-color:var(--teal)}
+.footer{margin-top:64px;padding-top:32px;border-top:2px solid var(--border);text-align:center;color:var(--text-muted);font-size:13px}
+.footer-logo{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:8px}
+.mobile-toggle{display:none;position:fixed;top:8px;left:8px;z-index:200;width:40px;height:40px;background:var(--bg-sidebar);border:none;border-radius:8px;color:#fff;font-size:20px;cursor:pointer;align-items:center;justify-content:center}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99}
+@media(max-width:1024px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.sidebar-overlay.open{display:block}.mobile-toggle{display:flex}.main-content{margin-left:0}.glossary-panel{width:100%}}
+@media(max-width:768px){.content-area{padding:0 24px 60px}.hero{padding:48px 24px}.hero h1{font-size:28px}.compare-block{flex-direction:column}.card-grid{grid-template-columns:1fr}.hero-stats{flex-wrap:wrap;gap:20px}}
+@media print{.sidebar,.top-bar,.glossary-btn,.glossary-panel,.mobile-toggle,.sidebar-overlay,.complete-btn,.reveal-btn,.nav-footer{display:none!important}.main-content{margin-left:0!important}.hero{padding:32px;break-after:page}.section-block{break-inside:avoid}.exercise-block{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const{useState,useEffect,useCallback,useRef}=React;
+
+// =============================================
+// SECTION & NAVIGATION DATA
+// =============================================
+const SECTIONS=[
+{id:'cover',title:'Cover & Overview',phase:'Overview',pages:'1-3'},
+{id:'objectives',title:'Playbook Objectives',phase:'Overview',pages:'3-4'},
+{id:'principles',title:'Guiding Principles',phase:'Overview',pages:'4-5'},
+{id:'aomt-intro',title:'Introducing AOMT',phase:'Overview',pages:'5-7'},
+{id:'playbook-structure',title:'Playbook Structure',phase:'Overview',pages:'7-10'},
+{id:'chapter1-intro',title:'AI-Empowered Problem Solving',phase:'Section I - Ch. I',pages:'11-12'},
+{id:'phase1-diagnosis',title:'Phase 1: Diagnosis Overview',phase:'Section I - Ch. I',pages:'12-13'},
+{id:'problem-statement',title:'Problem Statement',phase:'Section I - Ch. I',pages:'13-14'},
+{id:'issues-tree',title:'Issues Tree & Hypotheses',phase:'Section I - Ch. I',pages:'14-16'},
+{id:'data-request',title:'Data Request & Ingestion',phase:'Section I - Ch. I',pages:'16-17'},
+{id:'visualization',title:'Data Visualization',phase:'Section I - Ch. I',pages:'17-18'},
+{id:'curiosity-analysis',title:'Curiosity-Enabled Analysis',phase:'Section I - Ch. I',pages:'18-19'},
+{id:'validation',title:'Analysis Validation',phase:'Section I - Ch. I',pages:'19-20'},
+{id:'ai-research',title:'AI-Enabled Research',phase:'Section I - Ch. I',pages:'20-22'},
+{id:'analysis-plan',title:'Data Analysis Plan',phase:'Section I - Ch. I',pages:'22-24'},
+{id:'opportunity-synthesis',title:'Opportunity Synthesis',phase:'Section I - Ch. I',pages:'24-26'},
+{id:'opportunity-docs',title:'Opportunity Documentation',phase:'Section I - Ch. I',pages:'26-28'},
+{id:'prioritization-overview',title:'Prioritization Overview',phase:'Section I - Ch. I',pages:'28-30'},
+{id:'wsjf',title:'WSJF Scoring Method',phase:'Section I - Ch. I',pages:'30-34'},
+{id:'value-complexity',title:'Value vs. Complexity Matrix',phase:'Section I - Ch. I',pages:'34-36'},
+{id:'tool-development',title:'AI Tool Development',phase:'Section I - Ch. II',pages:'36-38'},
+{id:'design-prototype',title:'Design & Prototype',phase:'Section I - Ch. II',pages:'38-40'},
+{id:'agile-approaches',title:'Projects vs. Agile',phase:'Section I - Ch. II',pages:'41-43'},
+{id:'safe-framework',title:'SAFe Development Methods',phase:'Section I - Ch. II',pages:'43-46'},
+{id:'sustainment-intro',title:'Sustainment Framework',phase:'Section II',pages:'47-48'},
+{id:'structure',title:'Structure (Alignment)',phase:'Section II',pages:'48-49'},
+{id:'support',title:'Support (Learning)',phase:'Section II',pages:'49-50'},
+{id:'feedback',title:'Feedback (Performance)',phase:'Section II',pages:'50-51'},
+{id:'readiness-baseline',title:'Change Readiness Baseline',phase:'Section III',pages:'51-53'},
+{id:'readiness-assessment',title:'Readiness Assessment',phase:'Section III',pages:'53-55'},
+{id:'readiness-survey',title:'Readiness Survey Design',phase:'Section III',pages:'55-57'},
+{id:'communications',title:'Communications Management',phase:'Section III',pages:'57-59'},
+{id:'governance',title:'Governance Framework',phase:'Section III',pages:'59-61'},
+{id:'summary',title:'Playbook Summary',phase:'Summary',pages:'62-64'},
+{id:'glossary',title:'Glossary of Terms',phase:'Appendix',pages:'65-66'},
+];
+
+// =============================================
+// GLOSSARY DATA (key terms)
+// =============================================
+const GLOSSARY=[
+{term:'AOMT',def:'Agentic Operating Model Transformation. A three-phase methodology for diagnosing operational problems, prioritizing solutions, and sustaining improvements using agile governance. Rests on two foundational principles: Data First and AI First.'},
+{term:'Data First',def:'The principle of ingesting and interrogating comprehensive data before proposing solutions. Instead of starting with stakeholder impressions, start with data patterns and validate them against stakeholder experience.'},
+{term:'AI First',def:'The principle of designing solutions that take full advantage of AI capabilities to achieve quantum gains in efficiency. Ask "what becomes possible if AI handles this?" rather than "how can AI speed up step 3?"'},
+{term:'Problem Statement',def:'Structured format defining the problem being solved. Contains seven components: Description, Customers, Decision Makers, Decision Drivers, Boundaries, Success Measures, and Timeframe.'},
+{term:'Issues Tree',def:'A structured MECE decomposition tool that breaks a problem into logical component parts. Depicted horizontally with trunk (main problem), branches, sub-branches, and twigs.'},
+{term:'Hypothesis Testing',def:'Scientific method applied to operational problems using Null Hypothesis (H0: no effect) and Alternative Hypothesis (Ha: no effect cannot be proven). Rejecting H0 means the factor warrants investigation, not that causation is proven.'},
+{term:'Validated Gap',def:'The measured difference between current performance and a benchmark, confirmed by both quantitative data and qualitative interviews. A gap in data but not interviews (or vice versa) is a hypothesis, not validated.'},
+{term:'Baseline',def:'The pre-implementation measurement used as a reference point. Must be specific, measured, and documented before any solution is implemented.'},
+{term:'Benchmark',def:'An external or industry-standard reference point used to assess whether a gap is significant. Answers the question "compared to what?"'},
+{term:'Root Cause vs. Symptom',def:'A root cause is the mechanism producing the observed problem. A symptom is the problem itself. Phase 1 requires root causes, not symptoms.'},
+{term:'Drift',def:'Gradual, unintended regression of a metric toward its pre-implementation baseline. Dangerous because it is gradual and compounds over time.'},
+{term:'WSJF',def:'Weighted Shortest Job First. Phase 2 scoring method: Cost of Delay / Job Size = WSJF Score. Cost of Delay = Business Value + Time Criticality + Risk Reduction & Opportunity Enablement.'},
+{term:'Business Value',def:'A 1-10 rating of business value an option delivers. Scored by the cross-functional team. Common error: confusing effort required with value delivered.'},
+{term:'Time Criticality',def:'A 1-10 rating of urgency. Higher scores indicate regulatory deadlines, competitive pressure, or customer attrition risk.'},
+{term:'Risk Reduction & Opportunity Enablement',def:'A 1-10 rating of organizational risk mitigated or future capabilities unlocked by implementing the option.'},
+{term:'Job Size',def:'A 1-10 rating of implementation duration and complexity. The divisor in WSJF, so high-effort options need proportionally higher value to justify ranking.'},
+{term:'Context + Task + Output',def:'The prompt structure used throughout AOMT for AI interactions. Context provides validated findings, Task specifies what AI should produce, Output defines the format.'},
+{term:'Sequential Prompting',def:'Breaking a complex ask into multiple turns rather than one prompt. Each turn lets the practitioner check output before it becomes input for the next step.'},
+{term:'Hallucination',def:'When an AI model generates factually wrong but structurally plausible text. LLMs produce statistically likely text, not verified facts. AOMT treats all AI-generated figures as unverified until checked.'},
+{term:'Sensitivity Analysis',def:'Asking AI to generate scenarios when assumptions change. Best/likely/worst case. The scenarios are useful framing; specific numbers require independent verification.'},
+{term:'Agentic Tool',def:'An AI system that performs tasks autonomously within defined parameters, planning steps, executing actions, and adapting based on results without requiring human direction at each stage.'},
+{term:'Epic',def:'A high-level capability encompassing multiple user stories. Epics correspond to major solution components that can be estimated, prioritized, and implemented independently.'},
+{term:'User Story',def:'A specific need from a user perspective: "As a [role], I want [capability] so that [benefit]." Describes user experience, not system architecture.'},
+{term:'Sprint',def:'A fixed-duration work cycle, typically two weeks. During Phase 3, feedback becomes backlog items prioritized and committed to sprints.'},
+{term:'Product Owner',def:'Person who owns the product backlog and prioritization decisions. Reviews AI feedback analysis weekly and creates backlog items for sprint planning.'},
+{term:'Product Backlog',def:'The ordered list of all work items for a solution, maintained by the Product Owner. Grows from tech feedback, metric signals, and stakeholder observations.'},
+{term:'Option Set',def:'The 2-4 solution options developed in Phase 1 for Phase 2 scoring. Must contain genuine trade-offs between speed, impact, risk, and cost.'},
+{term:'Quick Win',def:'A low-risk, low-investment option implementable in weeks. Required in every option set. Trades magnitude for certainty.'},
+{term:'Transformational Option',def:'A high-impact, high-investment option requiring months. Carries the most fragile assumptions. Verify with IT and procurement before presenting.'},
+{term:'Sustainment Framework',def:'Three-pillar model: Structure (reporting lines, incentives), Support (continuous learning, collaboration), Feedback (goal setting, performance scorecards). All three must be present.'},
+{term:'Feedback Loop',def:'Structured mechanism where field observations reach someone who can act within a defined timeframe. Has a source, cadence, owner, and connection to sprint backlog.'},
+{term:'Agile Governance',def:'Post-implementation management where the solution evolves continuously through sprint cycles based on user feedback. Assumes initial implementation is Version 1.'},
+{term:'Readiness Baseline',def:'Initial assessment across three dimensions: North Star Vision, Performance Management alignment, and Resource availability.'},
+{term:'Readiness Assessment',def:'Evaluation of organizational capacity to absorb change across: Case for Change, Influence Network, and Communications.'},
+{term:'Case for Change',def:'The articulated answer to "why are we doing this?" that must resonate at every level. Must name specific harm of current state and concrete benefit of proposed change.'},
+{term:'Influence Network',def:'Map of who actually shapes opinion and drives adoption, which rarely matches the org chart. Includes formal leaders, informal leaders, and resistors.'},
+{term:'Monitoring Cadence',def:'How often metrics are checked: daily (zone-level), weekly (feedback analysis), monthly (trends), quarterly (solution health). Too frequent creates alert fatigue; too infrequent allows drift.'},
+{term:'SAFe',def:'Scaled Agile Framework. Provides structured approach to agile development at enterprise scale. AOMT leverages SAFe principles for continuous value delivery.'},
+{term:'Diagnostic Interviews',def:'Early Phase 1 interviews asking "What is broken? What frustrates you?" to generate qualitative data that combines with quantitative data to validate gaps.'},
+{term:'Validation Interviews',def:'Post-solution interviews testing whether proposed solutions address described problems. Different from diagnostic interviews. If interviews contradict the solution, the solution is wrong.'},
+{term:'Confirmation Bias',def:'Tendency to interpret evidence as confirmation of existing beliefs. Particularly dangerous during validation interviews. Defense: open-ended questions, treat contradictions as signal.'},
+{term:'T-Shirt Sizing',def:'Rough effort estimation using S/M/L/XL. S=days, M=weeks, L=1-3 months, XL=3+ months. False precision is worse than acknowledged imprecision at Phase 1 stage.'},
+];
+
+// =============================================
+// REUSABLE COMPONENTS
+// =============================================
+function PromptBlock({label,children}){
+return(<div className="prompt-block"><div className="prompt-label">{label||'Prompt'}</div><div className="prompt-text">{children}</div></div>);
+}
+function AIInsight({children}){
+return(<div className="ai-insight"><div className="ai-insight-label">&#9672; AI Insight</div><div>{children}</div></div>);
+}
+function VerifyBox({children}){
+return(<div className="verify-box"><div className="verify-label">&#9888; Verify</div><div>{children}</div></div>);
+}
+function PrincipleBox({children}){
+return(<div className="principle-box"><p>{children}</p></div>);
+}
+function MetroCallout({children}){
+return(<div className="metro-callout"><div className="metro-label">Metro Cable Example</div>{children}</div>);
+}
+function Exercise({title,children,answer}){
+const[show,setShow]=useState(false);
+return(<div className="exercise-block"><div className="exercise-badge">Exercise</div><div className="exercise-title">{title}</div><div className="exercise-content">{children}</div><div className="stop-line">Stop and attempt this before reading further.</div>{!show&&<button className="reveal-btn" onClick={()=>setShow(true)}>Reveal Answer &#8595;</button>}{show&&<div className="answer-block">{answer}</div>}</div>);
+}
+function Collapsible({title,children,defaultOpen}){
+const[isOpen,setIsOpen]=useState(defaultOpen||false);
+return(<div className="collapsible-section"><div className="collapsible-header" onClick={()=>setIsOpen(!isOpen)}><div className="collapsible-title">{title}</div><div className={`collapsible-icon ${isOpen?'open':''}`}>&#9660;</div></div><div className={`collapsible-body ${isOpen?'open':''}`}>{children}</div></div>);
+}
+
+// =============================================
+// GLOSSARY PANEL
+// =============================================
+function GlossaryPanel({isOpen,onClose}){
+const[search,setSearch]=useState('');
+const filtered=GLOSSARY.filter(g=>g.term.toLowerCase().includes(search.toLowerCase())||g.def.toLowerCase().includes(search.toLowerCase()));
+return(<>
+<div className={`glossary-panel ${isOpen?'open':''}`}>
+<button className="glossary-close" onClick={onClose}>&#10005;</button>
+<div className="glossary-header">
+<div style={{fontSize:'11px',fontWeight:'700',letterSpacing:'2px',textTransform:'uppercase',color:'var(--teal)'}}>AOMT Playbook</div>
+<div style={{fontSize:'20px',fontWeight:'800',color:'var(--blue-deep)',marginTop:'4px'}}>Glossary of Terms</div>
+<div style={{fontSize:'13px',color:'var(--text-muted)',marginTop:'4px'}}>{GLOSSARY.length} terms defined</div>
+<input className="glossary-search" placeholder="Search terms..." value={search} onChange={e=>setSearch(e.target.value)}/>
+</div>
+<div className="glossary-content">
+{filtered.map(g=>(<div key={g.term} className="glossary-term"><div className="glossary-term-name">{g.term}</div><div className="glossary-term-def">{g.def}</div></div>))}
+{filtered.length===0&&<p style={{color:'var(--text-muted)',fontSize:'14px'}}>No matching terms found.</p>}
+</div>
+</div>
+</>);
+}
+
+// =============================================
+// CONTENT SECTIONS
+// =============================================
+
+function SectionCover(){return(<>
+<p className="section-intro"><strong>Purpose:</strong> This playbook is a comprehensive guide for practitioners leveraging AI capabilities to facilitate new ways of working. The Agentic Operating Model Transformation (AOMT) provides a non-linear approach to operational transformations that moves farther and faster in achieving an organization's objectives.</p>
+<div className="card-grid">
+<div className="card"><div className="card-title">66 Pages</div><p className="body-text">Comprehensive methodology covering diagnosis through sustainment</p></div>
+<div className="card"><div className="card-title">3 Sections</div><p className="body-text">Practitioners Guide, Sustainment, and Change Management</p></div>
+<div className="card"><div className="card-title">Case Study</div><p className="body-text">Metro Cable worked example illustrating every concept</p></div>
+</div>
+<div className="sub-header">Table of Contents</div>
+<div className="numbered-item"><div className="num-badge">1</div><div><p className="body-text"><strong>Playbook Overview & Framework Introduction</strong> (Pages 1-10)</p></div></div>
+<div className="numbered-item"><div className="num-badge">2</div><div><p className="body-text"><strong>Section I: Practitioners Guide</strong> (Pages 11-40)<br/>Chapter I: AI-Empowered Problem-Solving | Chapter II: Tool Development & Agile Delivery</p></div></div>
+<div className="numbered-item"><div className="num-badge">3</div><div><p className="body-text"><strong>Section II: Performance Management & Sustainment</strong> (Pages 41-50)</p></div></div>
+<div className="numbered-item"><div className="num-badge">4</div><div><p className="body-text"><strong>Section III: Organizational Change Management</strong> (Pages 51-60)</p></div></div>
+<div className="numbered-item"><div className="num-badge">5</div><div><p className="body-text"><strong>Summary, Resources & Glossary</strong> (Pages 61-66)</p></div></div>
+</>);}
+
+function SectionObjectives(){return(<>
+<p className="section-intro"><strong>Purpose:</strong> This playbook is a comprehensive guide for practitioners leveraging AI capabilities to facilitate new ways of working.</p>
+<div className="compare-block">
+<div className="compare-side compare-good"><div className="compare-label">&#10003; What It Is</div>
+<ul className="bullet-list"><li>A practical framework for augmenting work with AI</li><li>Guidance on leveraging AI tools and methodologies</li><li>Illustrative examples with mock data for learning</li><li>AI tool-agnostic approaches</li><li>Best practices for organizational change readiness</li></ul>
+</div>
+<div className="compare-side compare-bad"><div className="compare-label">&#10007; What It Is Not</div>
+<ul className="bullet-list"><li>A prescriptive, one-size-fits-all solution</li><li>A replacement for your organization's AI policies</li><li>A substitute for specific subject matter expertise</li><li>A specific tool recommendation</li><li>A guarantee of specific results</li></ul>
+</div></div>
+</>);}
+
+function SectionPrinciples(){return(<>
+<p className="section-intro">This playbook is designed to be generic and agnostic to any specific tools, processes, or organizational structures. Always align with your organizational policies and governance frameworks.</p>
+<div className="card-grid">
+<div className="card"><div className="card-title">Broad Application</div><p className="body-text">Principles apply across industries, company sizes, and transformation contexts</p></div>
+<div className="card"><div className="card-title">High-Level Methods</div><p className="body-text">Guidance-driven without prioritizing any specific methodology over another</p></div>
+<div className="card"><div className="card-title">Illustrative Examples</div><p className="body-text">Mock data and scenarios demonstrate concepts without real data exposure</p></div>
+<div className="card"><div className="card-title">Policy Compliant</div><p className="body-text">Always defer to your organizational data and AI governance policies</p></div>
+</div>
+</>);}
+
+function SectionAOMTIntro(){return(<>
+<p className="section-intro">The <strong>Agentic Operating Model Transformation (AOMT)</strong> is a <strong>non-linear approach</strong> to operational transformations that leverages Artificial Intelligence and emerging technologies to move much farther and faster in achieving an organization's objectives.</p>
+<div className="ai-insight"><div className="ai-insight-label">&#9672; Two Core Principles</div>
+<p><strong>Data First</strong> -- Ingest and interrogate the data landscape to reveal and verify evidence-based opportunities.</p>
+<p style={{marginTop:'8px'}}><strong>AI First</strong> -- Design solutions that take full advantage of AI capabilities to make quantum gains in efficiency.</p>
+</div>
+<div className="sub-header">AOMT Core Activities</div>
+<div className="card-grid">
+<div className="card" style={{borderLeft:'4px solid var(--teal-dark)'}}><div className="card-title">Diagnose Data</div><p className="body-text">Connect to data sources, surface patterns and anomalies</p></div>
+<div className="card" style={{borderLeft:'4px solid var(--teal)'}}><div className="card-title">Prioritize Opportunities</div><p className="body-text">Rank based on impact, feasibility, criticality</p></div>
+<div className="card" style={{borderLeft:'4px solid var(--green)'}}><div className="card-title">Design & Prototype</div><p className="body-text">Create and test AI-powered solutions</p></div>
+<div className="card" style={{borderLeft:'4px solid var(--blue-med)'}}><div className="card-title">Implement Solutions</div><p className="body-text">Deploy through agile delivery methods</p></div>
+<div className="card" style={{borderLeft:'4px solid var(--gray-blue)'}}><div className="card-title">Sustain Improvements</div><p className="body-text">Monitor, govern, and continuously improve</p></div>
+<div className="card" style={{borderLeft:'4px solid var(--blue-deep)'}}><div className="card-title">Change Management</div><p className="body-text">Enable organizational readiness and adoption</p></div>
+</div>
+<PrincipleBox>Activities are iterative and frequently done concurrently to quickly yield "best fit" solutions. AOMT is not a waterfall process -- it thrives on parallel execution and continuous feedback.</PrincipleBox>
+</>);}
+
+function SectionPlaybookStructure(){return(<>
+<p className="section-intro">Each section showcases exemplary methodologies, approaches, and techniques tied to key topics.</p>
+<Collapsible title="SECTION I: PRACTITIONERS GUIDE" defaultOpen={true}>
+<p className="body-text"><strong>Chapter I: AI-Empowered Problem Solving</strong></p>
+<ul className="bullet-list"><li>Diagnose Data with AI</li><li>Prioritize Opportunities</li></ul>
+<p className="body-text" style={{marginTop:'16px'}}><strong>Chapter II: AI Tool / Solution Development & Agile Delivery</strong></p>
+<ul className="bullet-list"><li>Design / Prototype AI Tools</li><li>Consider Agile Delivery Approach</li></ul>
+</Collapsible>
+<Collapsible title="SECTION II: PERFORMANCE MANAGEMENT & SUSTAINMENT">
+<ul className="bullet-list"><li>Structure, Support, and Feedback framework</li><li>Sustain Improvements through continuous monitoring</li><li>Manage Performance with scorecards and goal setting</li></ul>
+</Collapsible>
+<Collapsible title="SECTION III: ORGANIZATIONAL CHANGE MANAGEMENT">
+<ul className="bullet-list"><li>Change Readiness Baseline and Assessment</li><li>Influence Network Mapping</li><li>Communications Management</li><li>Governance Framework</li></ul>
+</Collapsible>
+</>);}
+
+function SectionChapter1Intro(){return(<>
+<p className="section-intro">This chapter focuses on leveraging AI to diagnose organizational challenges and identify key opportunities through data-driven insights. It covers the complete diagnosis-to-prioritization workflow.</p>
+<div className="sub-header">Phase 1 (Iterative Process)</div>
+<div className="card-grid">
+<div className="card"><div className="card-title">Data Ingestion & Discovery</div><p className="body-text">Connect to existing data sources and allow AI to surface patterns, anomalies, and opportunities hidden within operational data.</p></div>
+<div className="card"><div className="card-title">AI-Assisted Diagnosis</div><p className="body-text">Use intelligent analysis to validate hypotheses, challenge assumptions, and reveal evidence-based insights.</p></div>
+<div className="card"><div className="card-title">Synthesis for Opportunities</div><p className="body-text">Translate key findings into coherent, actionable value levers for prioritization.</p></div>
+</div>
+<div className="sub-header">Phase 2</div>
+<div className="card"><div className="card-title">Opportunity Prioritization</div><p className="body-text">Rank and prioritize identified opportunities based on impact, feasibility, time criticality, and strategic alignment using WSJF or Value vs. Complexity Matrix.</p></div>
+</>);}
+
+function SectionPhase1Diagnosis(){return(<>
+<p className="section-intro">Diagnose activities are iterative and continue until the solutions team is comfortable that the problem has been distilled to its most exhaustive level with discrete opportunities identified.</p>
+<div className="card-grid">
+{[{n:'1',t:'Problem Statement',d:'Create an initial problem statement and refine as needed'},{n:'2',t:'Issues Tree',d:'Develop an issues tree and prune branches to identify focus areas'},{n:'3',t:'Data Request & Ingestion',d:'Start data ingestion and collection; track requests'},{n:'4',t:'Hypotheses',d:'Develop initial hypotheses to test and iterate based on findings'},{n:'5',t:'Data Analysis Plan',d:'Plan for data analysis approach and methodology'},{n:'6',t:'Data Analysis & Synthesis',d:'Analyze, validate, refine, and identify opportunities'}].map(s=>(
+<div key={s.n} className="card"><div style={{display:'flex',alignItems:'center',gap:'12px',marginBottom:'8px'}}><div className="num-badge">{s.n}</div><strong>{s.t}</strong></div><p className="body-text">{s.d}</p></div>
+))}
+</div>
+<AIInsight><p>This chapter walks through each topic step by step, using the Metro Cable case study to bring concepts to life through examples.</p></AIInsight>
+</>);}
+
+function SectionProblemStatement(){return(<>
+<p className="section-intro">A draft problem statement can be useful in creating the initial data request. Characterizing the issue in a structured way ensures the first data request is broad enough to provide useful insights.</p>
+<div className="sub-header">Problem Statement Elements</div>
+<ul className="bullet-list">
+<li><strong>Description:</strong> A high-level summary of the "problem to be solved" in everyday terminology</li>
+<li><strong>Customers:</strong> All end-users, intermediaries and leaders impacted by the problem</li>
+<li><strong>Decision Makers:</strong> Accountable parties who will make decisions on improvement options</li>
+<li><strong>Decision Drivers:</strong> Factors likely to influence decision makers</li>
+<li><strong>Boundaries:</strong> Aspects that are off-limits, or regulations that could constrain solutions</li>
+<li><strong>Success Measures:</strong> How effective solutions will be reflected in business metrics</li>
+<li><strong>Timeframe:</strong> When results need to be achieved</li>
+</ul>
+<PrincipleBox>This is an iterative, data-driven process. As additional data is ingested, assumptions will be validated, root causes surfaced, and hypotheses tested and refined accordingly.</PrincipleBox>
+</>);}
+
+function SectionIssuesTree(){return(<>
+<p className="section-intro">The Issues Tree is a MECE (Mutually Exclusive, Collectively Exhaustive) decomposition tool that breaks down a problem into logical component parts. Creating an Issues Tree should be a team exercise to capture multiple perspectives.</p>
+<div className="sub-header">Hypothesis Development</div>
+<p className="body-text">For each branch of the Issues Tree, develop hypotheses using the Null/Alternative framework:</p>
+<div className="compare-block">
+<div className="compare-side compare-bad"><div className="compare-label">H0 (Null Hypothesis)</div><p>Changes in this component will have "no effect" on the problem</p></div>
+<div className="compare-side compare-good"><div className="compare-label">Ha (Alternative Hypothesis)</div><p>"No effect" cannot be proven, suggesting the component may contribute to the problem</p></div>
+</div>
+<VerifyBox><p><strong>Important:</strong> Rejecting H0 means the factor warrants investigation, not that causation is proven. Unvalidated hypotheses require qualitative confirmation through diagnostic interviews before becoming validated gaps.</p></VerifyBox>
+</>);}
+
+function SectionDataRequest(){return(<>
+<p className="section-intro">The formal data request should be specific about tables, date ranges, and granularity requirements. A well-constructed data request anticipates downstream analysis needs.</p>
+<MetroCallout><p>Metro Cable's initial data request included: Customer Account Data, Employee Roster, Call Center Logs, Dispatch Logs, Work Order Data, Customer Complaint Logs, and P&L Financials.</p></MetroCallout>
+<PrincipleBox>In general, having access to more data is better. A limited dataset can fail to reveal the true nature of the problem and often requires additional data requests and repeated reviews which slow project work. Get as much relevant data as possible up front.</PrincipleBox>
+</>);}
+
+function SectionVisualization(){return(<>
+<p className="section-intro">AI-enabled analysis transforms raw data into visual insights that reveal operational patterns invisible in spreadsheets. What once required specialized mapping tools and significant effort can now be accomplished in minutes with natural language prompts.</p>
+<PromptBlock label="Visualization Prompt">"Using the attached file, plot the location of customers on a daylight version map of the Kansas City metropolitan area that includes streets. Each residential customer must be indicated with a small blue circle. Each commercial customer must be indicated with a small green square."</PromptBlock>
+<AIInsight><p>Geographic visualization immediately reveals customer clustering patterns, service area coverage, and potential gaps. This visualization took minutes to create using AI, whereas traditional GIS tools would have required specialized software licenses and hours of manual work.</p></AIInsight>
+<Exercise title="Practice: Craft a Visualization Prompt" answer={<><p><strong>Sample Answer:</strong> "Using the attached employee roster file, create a bar chart showing the distribution of technicians by years of experience (0-2, 3-5, 6-10, 10+ years). Use blue bars, include exact counts above each bar, title the chart 'Technician Experience Distribution'."</p><p><strong>Key Elements:</strong> Specific chart type, clear grouping categories, color specification, data labels, title and axis specifications.</p></>}>
+<p>You have an employee roster containing technician names, hire dates, and assignments. Write a specific prompt to generate a useful visualization of experience levels.</p>
+</Exercise>
+</>);}
+
+function SectionCuriosityAnalysis(){return(<>
+<p className="section-intro">AI-enabled analysis can be thought of as "curiosity-enabled analysis." Traditional constraints limited teams to predefined questions. Now teams can freely explore data relationships without significant time investment.</p>
+<div className="compare-block">
+<div className="compare-side compare-bad"><div className="compare-label">Traditional Analysis</div><p>Labor-intensive manual analysis. Time-constrained. Unable to fully interrogate data. Many potential insights remained undiscovered.</p></div>
+<div className="compare-side compare-good"><div className="compare-label">AI-Enabled Analysis</div><p>Quick analysis of relationships and patterns. Freedom to explore tangential questions. Multiple hypotheses tested rapidly. Negative results efficiently narrow focus.</p></div>
+</div>
+<MetroCallout><p>While analyzing customer data, the team became curious about payment behavior. The 28% delinquency rate seemed high, prompting follow-up research that revealed Metro Cable actually performs slightly better than the industry average of 30-34%.</p></MetroCallout>
+<PrincipleBox>When interrogating data, there are no "bad" questions. Even if analysis does not directly align with initial hypotheses, results may produce interesting insights that guide later work. AI-enabled analysis removes the time penalty for exploration.</PrincipleBox>
+</>);}
+
+function SectionValidation(){return(<>
+<p className="section-intro">Teams should never rely on a singular AI tool analysis for key determinations. AI outputs are inherently probabilistic, meaning results can vary even with identical inputs. Validate across multiple runs and tools.</p>
+<div className="sub-header">Four Validation Methods</div>
+<div className="numbered-item"><div className="num-badge">1</div><div><p className="body-text"><strong>Multiple Runs - Same Tool:</strong> Same prompt and data in separate sessions</p></div></div>
+<div className="numbered-item"><div className="num-badge">2</div><div><p className="body-text"><strong>Prompt Variations:</strong> Slight alterations to prompt wording with same data</p></div></div>
+<div className="numbered-item"><div className="num-badge">3</div><div><p className="body-text"><strong>Cross-Tool Comparison:</strong> Same prompt and data in different AI tools</p></div></div>
+<div className="numbered-item"><div className="num-badge">4</div><div><p className="body-text"><strong>Cross-Validation:</strong> Ask a second AI tool to validate the output of the first</p></div></div>
+<MetroCallout><p><strong>Staffing Analysis Example:</strong> Three runs produced different headline conclusions (Appropriately Staffed, Overstaffed, Right-Sized) but all three mentioned inefficiencies in role distribution. The consensus finding about distribution was more reliable than the conflicting headline conclusions.</p></MetroCallout>
+<PrincipleBox>The team must use caution in reviewing and making recommendations based on a single analysis generated by AI tools. Validate results across multiple runs and tools, and pay special attention to themes that appear consistently across varied analyses.</PrincipleBox>
+</>);}
+
+function SectionAIResearch(){return(<>
+<p className="section-intro">AI-enabled research transforms hours of manual literature review into minutes of targeted inquiry. Use it to validate problem statements, understand industry context, and identify regulatory or competitive factors.</p>
+<PromptBlock label="Research Prompt 1">"Summarize trends in customer satisfaction scores within the Utilities industry including key drivers of customer satisfaction"</PromptBlock>
+<AIInsight><p><strong>Validation:</strong> Metro Cable's customer satisfaction rating (55/100) is well below the Utilities Industry average (74/100), confirming the problem is objectively severe. Among cable providers specifically, Metro Cable ranks at the bottom of peers.</p></AIInsight>
+<PromptBlock label="Research Prompt 2">"Summarize the impact of Customer Satisfaction scores on Utilities Rate Case approval when presented to Public Service Commissions"</PromptBlock>
+<AIInsight><p><strong>Bottom Line:</strong> Customer satisfaction scores have evolved from soft metrics to hard financial consequences that directly reduce approved revenue requirements. This finding informed solution design by highlighting which metrics PSC reviewers prioritize.</p></AIInsight>
+<VerifyBox><p><strong>Always validate:</strong> AI tools can make mistakes. Enter the same prompt into multiple AI tools or prompt a second tool to validate the output of the first tool.</p></VerifyBox>
+</>);}
+
+function SectionAnalysisPlan(){return(<>
+<p className="section-intro">A structured Data Analysis Plan ensures systematic investigation and clear ownership. It transforms vague investigation intentions into specific, executable tasks.</p>
+<div className="table-wrap"><table><thead><tr><th>Element</th><th>Description</th></tr></thead><tbody>
+<tr><td><strong>Issue</strong></td><td>The branch of the Issues Tree against which Hypotheses apply</td></tr>
+<tr><td><strong>H0</strong></td><td>The null hypothesis ("no effect")</td></tr>
+<tr><td><strong>Ha</strong></td><td>The alternative hypothesis</td></tr>
+<tr><td><strong>Data Source</strong></td><td>What data will be used for analysis</td></tr>
+<tr><td><strong>Planned Analysis</strong></td><td>What analysis is planned to test the hypothesis</td></tr>
+<tr><td><strong>Lead</strong></td><td>Who is responsible for conducting the analysis</td></tr>
+</tbody></table></div>
+<PrincipleBox>A well-structured Data Analysis Plan enables parallel execution, clear ownership, data efficiency, progress tracking, and hypothesis discipline. Spend time upfront creating a structured plan to accelerate overall delivery.</PrincipleBox>
+</>);}
+
+function SectionOpportunitySynthesis(){return(<>
+<p className="section-intro">After completing data analysis and hypothesis testing, teams synthesize findings into coherent, actionable opportunities. This transforms analytical insights into business cases that stakeholders can evaluate.</p>
+<div className="sub-header">From Analysis to Opportunities</div>
+<div className="numbered-item"><div className="num-badge">1</div><div><p className="body-text"><strong>Validated Findings:</strong> Hypotheses tested, data analyzed, relationships confirmed or rejected</p></div></div>
+<div className="numbered-item"><div className="num-badge">2</div><div><p className="body-text"><strong>Pattern Recognition:</strong> Group related findings, identify root causes, recognize systemic issues</p></div></div>
+<div className="numbered-item"><div className="num-badge">3</div><div><p className="body-text"><strong>Opportunity Definition:</strong> Define discrete opportunities with clear problem statements and expected benefits</p></div></div>
+<div className="numbered-item"><div className="num-badge">4</div><div><p className="body-text"><strong>Business Case Development:</strong> Quantify value, assess feasibility, estimate resources, identify risks</p></div></div>
+<MetroCallout><p>After analyzing technician dispatch data, customer complaints, and service metrics, the Metro Cable team synthesized seven discrete opportunities including AI-Based Installation Optimization, Real-Time Technician ETA Visibility, and Zone-Based Home-Basing.</p></MetroCallout>
+</>);}
+
+function SectionOpportunityDocs(){return(<>
+<p className="section-intro">Standardize opportunity documentation for comparison. Each opportunity needs consistent structure to enable fair evaluation during prioritization.</p>
+<div className="sub-header">Six Components of Each Opportunity</div>
+<ul className="bullet-list">
+<li><strong>ID & Name:</strong> Short, memorable identifier</li>
+<li><strong>Description:</strong> What changes, who is affected, how it works</li>
+<li><strong>Root Causes Addressed:</strong> Specific gaps from diagnosis phase</li>
+<li><strong>Expected Benefits:</strong> Quantified where possible, tied to baseline metrics</li>
+<li><strong>Implementation Complexity:</strong> Low / Medium / High with rationale</li>
+<li><strong>Key Challenges & Dependencies:</strong> Realistic obstacles and prerequisites</li>
+</ul>
+<PrincipleBox>Documentation quality directly impacts prioritization quality. Vague opportunities lead to misaligned scoring. Present a balanced portfolio with diversity across complexity, investment, risk, and scope.</PrincipleBox>
+</>);}
+
+function SectionPrioritizationOverview(){return(<>
+<p className="section-intro">With validated opportunities documented, Phase 2 begins: prioritization. The goal is to rank opportunities based on business value, time criticality, risk reduction, and implementation effort.</p>
+<div className="table-wrap"><table><thead><tr><th>Factor</th><th>WSJF (Weighted Shortest Job First)</th><th>Value vs. Complexity Matrix</th></tr></thead><tbody>
+<tr><td><strong>Complexity</strong></td><td>Higher -- scoring 4 dimensions on 1-10 scale</td><td>Lower -- qualitative 2x2 grid placement</td></tr>
+<tr><td><strong>Time Required</strong></td><td>90-120 min for 5-7 opportunities</td><td>45-60 min for same set</td></tr>
+<tr><td><strong>Best For</strong></td><td>Agile environments, large portfolios (10+)</td><td>Quick prioritization, smaller sets (3-5)</td></tr>
+<tr><td><strong>Output</strong></td><td>Rank-ordered list with numerical scores</td><td>Quadrant placement with action guidance</td></tr>
+</tbody></table></div>
+<PrincipleBox>The methodology matters less than consistent application and stakeholder buy-in. Pick one, apply it rigorously, and use the results to drive decisions.</PrincipleBox>
+</>);}
+
+function SectionWSJF(){return(<>
+<p className="section-intro">WSJF is an industry-standard prioritization method from SAFe. Formula: WSJF = Cost of Delay (CoD) / Job Size, where CoD = Business Value + Time Criticality + Risk Reduction & Opportunity Enablement. Each scored 1-10. Higher WSJF = higher priority.</p>
+<div className="sub-header">Scoring Components</div>
+<div className="table-wrap"><table><thead><tr><th>Component</th><th>9-10</th><th>5-6</th><th>1-2</th></tr></thead><tbody>
+<tr><td><strong>Business Value</strong></td><td>Transformational impact</td><td>Moderate efficiency gains</td><td>Minimal, nice-to-have</td></tr>
+<tr><td><strong>Time Criticality</strong></td><td>Regulatory deadline, market window closing</td><td>Moderate urgency, annual cycle</td><td>No time pressure</td></tr>
+<tr><td><strong>Risk/Opportunity</strong></td><td>Eliminates major risk, enables multiple futures</td><td>Moderate risk mitigation</td><td>Minimal risk impact</td></tr>
+<tr><td><strong>Job Size</strong></td><td>&gt;12 months, major complexity</td><td>3-6 months, moderate</td><td>&lt;1 month, simple</td></tr>
+</tbody></table></div>
+<MetroCallout><p><strong>Example:</strong> Sequential Dispatch (CoD=20, Job Size=3, WSJF=6.67, Rank #1) ranked above Zone Home-Basing (CoD=24, Job Size=6, WSJF=4.00, Rank #2) because the quick implementation time made it higher priority despite lower total value.</p></MetroCallout>
+<VerifyBox><p><strong>Critical:</strong> Job Size estimates from unfamiliar teams can be wildly inaccurate. Consult technical leads and add buffer for unknowns. Underestimating Job Size inflates WSJF scores artificially.</p></VerifyBox>
+</>);}
+
+function SectionValueComplexity(){return(<>
+<p className="section-intro">The Value vs. Complexity Matrix provides a simpler, qualitative approach to prioritization. Opportunities are placed in a 2x2 grid based on perceived value and implementation complexity.</p>
+<div className="card-grid">
+<div className="card" style={{borderTop:'4px solid var(--green)'}}><div className="card-title">Quick Wins</div><p className="body-text">High Value, Low Complexity. Implement first. These deliver rapid value with minimal risk.</p></div>
+<div className="card" style={{borderTop:'4px solid var(--blue-deep)'}}><div className="card-title">Strategic Projects</div><p className="body-text">High Value, High Complexity. Plan and resource carefully. These are your transformational initiatives.</p></div>
+<div className="card" style={{borderTop:'4px solid var(--teal)'}}><div className="card-title">Fill-Ins</div><p className="body-text">Low Value, Low Complexity. Execute if resources allow. Useful for building momentum.</p></div>
+<div className="card" style={{borderTop:'4px solid var(--orange)'}}><div className="card-title">Avoid / Defer</div><p className="body-text">Low Value, High Complexity. Deprioritize. The effort is not justified by the expected return.</p></div>
+</div>
+</>);}
+
+function SectionToolDevelopment(){return(<>
+<p className="section-intro">Chapter II covers AI Tool and Solution Development. When opportunities require building new AI-powered tools, teams must follow a structured approach from requirements through deployment.</p>
+<div className="sub-header">Tool Development Process</div>
+<ul className="bullet-list">
+<li><strong>Requirements Gathering:</strong> Translate prioritized opportunities into technical requirements using user stories and acceptance criteria</li>
+<li><strong>Architecture Design:</strong> Define system architecture, data flows, integration points, and technology stack</li>
+<li><strong>Prototype Development:</strong> Build minimum viable prototypes for stakeholder review and iteration</li>
+<li><strong>Testing & Validation:</strong> Rigorous testing against acceptance criteria before deployment</li>
+<li><strong>Deployment & Feedback:</strong> Deploy incrementally with feedback loops for continuous improvement</li>
+</ul>
+<PrincipleBox>AI tool development should follow the "AI First" principle: design solutions that take full advantage of AI capabilities to achieve quantum gains, not just incremental automation of existing manual processes.</PrincipleBox>
+</>);}
+
+function SectionDesignPrototype(){return(<>
+<p className="section-intro">Design and Prototype activities translate prioritized opportunities into tangible solutions. Use iterative prototyping to validate concepts before full implementation.</p>
+<div className="sub-header">User Stories for Solution Design</div>
+<div className="quote-block"><strong>Format:</strong> "As a [role], I want [capability] so that [benefit]."<br/><br/><strong>Example:</strong> "As a dispatch manager, I want to see real-time technician locations on a map so that I can assign the nearest available technician to each service call."</div>
+<div className="sub-header">Acceptance Criteria</div>
+<p className="body-text">Testable conditions that define when a user story is "done." Written as concrete, verifiable statements. "Tech marks job complete in mobile app" is an acceptance criterion. "System works properly" is not.</p>
+<Exercise title="Write a User Story" answer={<><p><strong>Sample:</strong> "As a customer, I want to receive a text message with my technician's real-time ETA so that I can plan my day and be home when the technician arrives."</p><p><strong>Acceptance Criteria:</strong> 1) Customer receives SMS when tech is 30 min away. 2) ETA updates every 5 min. 3) Customer can reply CONFIRM or RESCHEDULE.</p></>}>
+<p>Write a user story for the Real-Time Technician ETA Visibility opportunity from the Metro Cable case study.</p>
+</Exercise>
+</>);}
+
+function SectionAgileApproaches(){return(<>
+<p className="section-intro">Organizations can implement AOMT using either sequential project-based approaches or concurrent agile methods. Understanding the differences helps teams choose the right strategy.</p>
+<div className="compare-block">
+<div className="compare-side compare-bad"><div className="compare-label">Projects Approach (Sequential)</div><p>Linear progression through phases. Clear boundaries and handoffs. Easier to manage. Longer time to full value. Suitable for organizations new to transformation.</p></div>
+<div className="compare-side compare-good"><div className="compare-label">Agile Approach (Concurrent)</div><p>Multiple concurrent workstreams. Continuous value delivery. Faster benefit realization. Requires mature change management. Best for experienced teams.</p></div>
+</div>
+<PrincipleBox>AOMT is best implemented in a comprehensive non-linear, agile, and iterative manner. However, organizations can start with sequential execution and transform to an agile approach over time as maturity grows.</PrincipleBox>
+</>);}
+
+function SectionSAFe(){return(<>
+<p className="section-intro">The Scaled Agile Framework (SAFe) provides a structured approach to agile development at enterprise scale. AOMT leverages SAFe principles for continuous value delivery through iterative design, build, test, and deployment cycles.</p>
+<Collapsible title="Stage 1: ASSESS & PLAN" defaultOpen={true}>
+<p className="body-text"><strong>Organization Leaders</strong> provide vision and direction based on investigation results.</p>
+<p className="body-text"><strong>Program Office</strong> develops roadmaps using Economic View (ROI analysis) and Systems Thinking (big picture).</p>
+<p className="body-text"><strong>Architecture Review Board (ARB)</strong> confirms system architecture is robust and approves plans before hand-over to build teams.</p>
+<p className="body-text"><strong>Voice of Customer (VOC)</strong> and <strong>Voice of the Marketplace (VOM)</strong> inform requirements and strategic direction.</p>
+</Collapsible>
+<Collapsible title="Stage 2: AGILE DESIGN, BUILD, TEST">
+<p className="body-text"><strong>Product Owners</strong> drive adherence to roadmap. <strong>Scrum Masters</strong> manage build teams and remove roadblocks. <strong>Agile Build Teams</strong> develop incremental features.</p>
+<div className="quote-block"><strong>"Develop on cadence / Deliver on demand"</strong> -- Teams work in consistent sprints but deploy when features are ready and business conditions are optimal.</div>
+</Collapsible>
+<Collapsible title="Stage 3: DEPLOY & ADOPT USERS">
+<p className="body-text"><strong>Business Leaders</strong> sign off on delivery requirements. <strong>Release Management</strong> coordinates deployment. <strong>Change Management Team</strong> ensures end users are prepared. Continuous feedback flows back to Assess & Plan.</p>
+</Collapsible>
+</>);}
+
+function SectionSustainmentIntro(){return(<>
+<p className="section-intro">Transformation efforts fail most often not because solutions are wrong, but because changes do not stick. Sustainment requires permanent shifts in individual behavior, applying multiple levers across Structure, Support, and Feedback simultaneously.</p>
+<div className="card-grid">
+<div className="card" style={{borderTop:'4px solid var(--blue-deep)'}}><div className="card-title">1. STRUCTURE</div><ul className="bullet-list"><li><strong>Reporting Lines:</strong> Organizational alignment and accountability</li><li><strong>Incentives & Career Path:</strong> Rewards tied to desired behaviors</li></ul></div>
+<div className="card" style={{borderTop:'4px solid var(--teal)'}}><div className="card-title">2. SUPPORT</div><ul className="bullet-list"><li><strong>Continuous Learning:</strong> Ongoing training and skill development</li><li><strong>Team Collaboration:</strong> Peer support and knowledge sharing</li></ul></div>
+<div className="card" style={{borderTop:'4px solid var(--green)'}}><div className="card-title">3. FEEDBACK</div><ul className="bullet-list"><li><strong>Goal Setting:</strong> Clear, measurable SMART objectives</li><li><strong>Performance Scorecards:</strong> Real-time visibility into progress</li></ul></div>
+</div>
+<PrincipleBox>All three elements must be present and interconnected. Missing any one weakens the entire sustainment system. The approach varies by organization due to culture, past experiences, and work environment.</PrincipleBox>
+</>);}
+
+function SectionStructure(){return(<>
+<p className="section-intro">Sustainment requires structural alignment. Organizational structures must be intentionally reviewed and redesigned to support new behaviors -- otherwise changes regress to old patterns.</p>
+<div className="sub-header">Reporting Lines</div>
+<p className="body-text"><strong>The Problem:</strong> When end-to-end process ownership is split across groups, objectives, metrics, and leadership messages often diverge, generating conflicting behaviors.</p>
+<div className="sub-header">Incentives & Career Path</div>
+<p className="body-text"><strong>The Problem:</strong> If variable pay and recognition are not updated to reflect new methods, employees will continue optimizing for old metrics even when they contradict the intended change.</p>
+<div className="table-wrap"><table><thead><tr><th>Old Incentive</th><th>Behavior It Drives</th><th>New Incentive</th><th>Desired Behavior</th></tr></thead><tbody>
+<tr><td>Highest sales volume</td><td>Chase any sale</td><td>Profitable revenue growth</td><td>Pursue high-margin customers</td></tr>
+<tr><td>Production throughput</td><td>Maximize output, ignore quality</td><td>First-pass yield rate</td><td>Balance speed with quality</td></tr>
+<tr><td>Call handle time</td><td>Rush customers off phone</td><td>First-call resolution</td><td>Solve problems completely</td></tr>
+</tbody></table></div>
+<PrincipleBox>Sustainable change requires alignment across structure, metrics, leadership messaging, and incentives. Without organizational alignment, teams optimize in their silos at the expense of enterprise outcomes.</PrincipleBox>
+</>);}
+
+function SectionSupport(){return(<>
+<p className="section-intro">Lasting change is not a one-time event. Meaningful, durable change happens through ongoing support and continuous reinforcement, not through isolated initiatives.</p>
+<div className="sub-header">Continuous Learning</div>
+<p className="body-text">New process discoveries and reinforcement of key methods should become part of normal business practices. Within 90 days, half of one-time training content is forgotten unless reinforced.</p>
+<div className="sub-header">Team Collaboration</div>
+<p className="body-text">Post-training, team members are often left to apply new practices individually, causing variability that degrades standardized methods. Team standups offer a safe environment to collaborate, discuss, and close knowledge gaps together.</p>
+<PrincipleBox>Without continuous learning systems and collaborative support networks, disconnected individuals and teams diverge from best practices, standardized methods, and shared knowledge.</PrincipleBox>
+</>);}
+
+function SectionFeedback(){return(<>
+<p className="section-intro">Sustainment requires clear goals and continuous performance feedback. This ensures teams stay aligned and can adapt efforts based on measurable progress.</p>
+<div className="sub-header">Goal Setting</div>
+<p className="body-text">Goals should follow SMART criteria (Specific, Measurable, Achievable, Relevant, Time-bound) and be translatable to individual daily performance. Employees need to understand the impact of changes in their work.</p>
+<div className="sub-header">Performance Scorecards</div>
+<p className="body-text">Scorecards differ from standard dashboards in one critical way: they include <strong>decision triggers</strong> -- specific metric values that require specific responses. Without decision triggers, scorecards become information displays that people review and ignore.</p>
+<PrincipleBox>The scorecard becomes a feedback loop only when it connects to the Product Backlog -- observations from the scorecard generate backlog items that drive sprint-level improvements.</PrincipleBox>
+</>);}
+
+function SectionReadinessBaseline(){return(<>
+<p className="section-intro">Before change begins, assess the organization's current state across three critical dimensions to establish the "before" state.</p>
+<div className="card-grid">
+<div className="card"><div className="card-title">1. North Star Vision</div><p className="body-text">Do employees understand the 3-5 year strategic direction and how their work contributes? Organizations with clear North Stars score higher on readiness because employees already have a mental model for why changes happen.</p></div>
+<div className="card"><div className="card-title">2. Performance Management</div><p className="body-text">Are KPIs explicitly aligned with the behaviors and outcomes the change requires? Misaligned KPIs signal that the organizational structure will resist the change.</p></div>
+<div className="card"><div className="card-title">3. Resources</div><p className="body-text">Can necessary people be dedicated to solution design, build, and implementation without breaking current operations?</p></div>
+</div>
+</>);}
+
+function SectionReadinessAssessment(){return(<>
+<p className="section-intro">Deep dive evaluation of organizational capacity to absorb and sustain change. Conducting this before Phase 1 launches prevents discovering adoption blockers during Phase 3 rollout.</p>
+<div className="card-grid">
+<div className="card"><div className="card-title">1. Case for Change</div><p className="body-text">Does everyone realize the need for change even if it causes short-term disruption? A strong case names specific harm of the current state and concrete benefit of the proposed change.</p></div>
+<div className="card"><div className="card-title">2. Influence Network</div><p className="body-text">Who are the change champions and informal influencers? Understanding the network prevents over-relying on executive sponsorship and dismissing resistors as obstructionists.</p></div>
+<div className="card"><div className="card-title">3. Communications</div><p className="body-text">Which channels and authorship styles are perceived as conveying important information? Understanding communication flow is critical for adoption.</p></div>
+</div>
+<VerifyBox><p>If the Case for Change relies on abstract language ("drive excellence," "optimize operations"), it will not survive contact with skeptical middle management. Weak cases produce compliance without commitment.</p></VerifyBox>
+</>);}
+
+function SectionReadinessSurvey(){return(<>
+<p className="section-intro">Design readiness surveys to quantify organizational capacity for change across the three assessment dimensions. Surveys provide data-driven baseline measurements.</p>
+<div className="sub-header">Survey Design Principles</div>
+<ul className="bullet-list">
+<li><strong>Use Likert scales</strong> (1-5 or 1-7) for quantifiable comparison across groups and over time</li>
+<li><strong>Include open-ended questions</strong> to capture nuance that scales miss</li>
+<li><strong>Survey all levels:</strong> Executive, management, and frontline perspectives often diverge significantly</li>
+<li><strong>Ensure anonymity</strong> to get honest responses rather than socially desirable answers</li>
+<li><strong>Benchmark against</strong> previous surveys or industry norms where available</li>
+</ul>
+<PrincipleBox>Survey results are inputs to planning, not report cards. Low readiness scores in specific dimensions indicate where change management effort must concentrate -- they are diagnostic, not judgmental.</PrincipleBox>
+</>);}
+
+function SectionCommunications(){return(<>
+<p className="section-intro">Effective communications are critical for change adoption. Understanding organizational communication channels, authorship impact, and reinforcement strategies ensures messages reach and resonate with intended audiences.</p>
+<div className="sub-header">Key Assessment Questions</div>
+<ul className="bullet-list">
+<li><strong>Channel Effectiveness:</strong> Which channels convey important information?</li>
+<li><strong>Authorship Influence:</strong> How does communication authorship influence effectiveness?</li>
+<li><strong>Frequency Impact:</strong> How impactful is frequency of communication?</li>
+<li><strong>Lead-Time:</strong> What is the most effective lead-time for announcements?</li>
+<li><strong>Reinforcement:</strong> How are messages typically reinforced?</li>
+</ul>
+<div className="sub-header">Communication Best Practices</div>
+<ul className="bullet-list">
+<li><strong>Multi-Channel Approach:</strong> Use multiple channels to reinforce key messages</li>
+<li><strong>Executive Sponsorship:</strong> Ensure visible leadership support</li>
+<li><strong>Consistent Messaging:</strong> Maintain aligned messages across all levels</li>
+<li><strong>Two-Way Dialogue:</strong> Create opportunities for questions and feedback</li>
+<li><strong>Regular Reinforcement:</strong> Repeat key messages through various touchpoints</li>
+</ul>
+</>);}
+
+function SectionGovernance(){return(<>
+<p className="section-intro">The governance framework establishes rules, practices, and processes to drive consistent project delivery discipline. It ensures accountability, standardization, and effective execution.</p>
+<div className="sub-header">House of Governance Framework</div>
+<p className="body-text">The governance structure includes Steering Committee (executive oversight), Project Management (day-to-day coordination), and Program Management capabilities spanning:</p>
+<div className="card-grid">
+<div className="card"><div className="card-title">Reporting & Analytics</div><p className="body-text">Status tracking, milestone reporting, KPI dashboards</p></div>
+<div className="card"><div className="card-title">Risk Management</div><p className="body-text">Risk identification, assessment, mitigation planning</p></div>
+<div className="card"><div className="card-title">Resource Management</div><p className="body-text">Allocation, capacity planning, skill mapping</p></div>
+<div className="card"><div className="card-title">Quality Assurance</div><p className="body-text">Standards, testing protocols, acceptance criteria</p></div>
+</div>
+<PrincipleBox>Agile governance assumes the initial implementation is Version 1, not the final product. The solution evolves continuously based on user feedback through sprint cycles, contrasting with traditional governance which locks the solution and monitors for variance.</PrincipleBox>
+</>);}
+
+function SectionSummary(){return(<>
+<p className="section-intro">The AOMT Playbook provides a comprehensive framework for practitioners to leverage AI capabilities in operational transformations. Key takeaways across all three sections:</p>
+<div className="sub-header">Section I: Practitioners Guide</div>
+<ul className="bullet-list">
+<li><strong>Data First:</strong> Always start with data before forming conclusions</li>
+<li><strong>AI First:</strong> Design solutions that leverage full AI capabilities</li>
+<li><strong>Validate Everything:</strong> Never rely on single AI analysis for critical decisions</li>
+<li><strong>Structured Prioritization:</strong> Use WSJF or Value/Complexity Matrix for defensible decisions</li>
+<li><strong>Iterative Process:</strong> Diagnosis is non-linear; revisit as new data emerges</li>
+</ul>
+<div className="sub-header">Section II: Sustainment</div>
+<ul className="bullet-list">
+<li><strong>Three Pillars:</strong> Structure, Support, and Feedback must all be present</li>
+<li><strong>Behavioral Change:</strong> Sustainment requires permanent shifts in individual behavior</li>
+<li><strong>Agile Governance:</strong> Solutions evolve continuously through sprint-based iteration</li>
+<li><strong>Named Ownership:</strong> Specific person, specific action, specific cadence</li>
+</ul>
+<div className="sub-header">Section III: Change Management</div>
+<ul className="bullet-list">
+<li><strong>Readiness First:</strong> Assess organizational capacity before launching changes</li>
+<li><strong>Influence Networks:</strong> Map who actually drives adoption, not just the org chart</li>
+<li><strong>Multi-Channel Communications:</strong> Reinforce messages through multiple touchpoints</li>
+<li><strong>Governance Framework:</strong> Structured oversight enables consistent delivery</li>
+</ul>
+<div className="ai-insight"><div className="ai-insight-label">&#9672; Final Thought</div>
+<p>AOMT is not a one-time engagement methodology. It embeds continuous feedback and sprint-based iteration into the client's operating rhythm, which means the solution keeps changing after the consulting team leaves. This is the design, not a flaw.</p>
+</div>
+</>);}
+
+function SectionGlossaryInline(){return(<>
+<p className="section-intro">Complete glossary of {GLOSSARY.length} terms as used within the AOMT methodology. Definitions reflect AOMT-specific meaning, which sometimes diverges from textbook usage. Use the floating glossary button for quick access from any section.</p>
+{GLOSSARY.map(g=>(<div key={g.term} style={{marginBottom:'16px',paddingBottom:'12px',borderBottom:'1px solid var(--border)'}}><p className="body-text"><strong style={{color:'var(--blue-deep)',fontSize:'15px'}}>{g.term}:</strong> {g.def}</p></div>))}
+</>);}
+
+// =============================================
+// SECTION CONTENT MAP
+// =============================================
+const CONTENT_MAP={
+'cover':SectionCover,'objectives':SectionObjectives,'principles':SectionPrinciples,
+'aomt-intro':SectionAOMTIntro,'playbook-structure':SectionPlaybookStructure,
+'chapter1-intro':SectionChapter1Intro,'phase1-diagnosis':SectionPhase1Diagnosis,
+'problem-statement':SectionProblemStatement,'issues-tree':SectionIssuesTree,
+'data-request':SectionDataRequest,'visualization':SectionVisualization,
+'curiosity-analysis':SectionCuriosityAnalysis,'validation':SectionValidation,
+'ai-research':SectionAIResearch,'analysis-plan':SectionAnalysisPlan,
+'opportunity-synthesis':SectionOpportunitySynthesis,'opportunity-docs':SectionOpportunityDocs,
+'prioritization-overview':SectionPrioritizationOverview,'wsjf':SectionWSJF,
+'value-complexity':SectionValueComplexity,'tool-development':SectionToolDevelopment,
+'design-prototype':SectionDesignPrototype,'agile-approaches':SectionAgileApproaches,
+'safe-framework':SectionSAFe,'sustainment-intro':SectionSustainmentIntro,
+'structure':SectionStructure,'support':SectionSupport,'feedback':SectionFeedback,
+'readiness-baseline':SectionReadinessBaseline,'readiness-assessment':SectionReadinessAssessment,
+'readiness-survey':SectionReadinessSurvey,'communications':SectionCommunications,
+'governance':SectionGovernance,'summary':SectionSummary,'glossary':SectionGlossaryInline
+};
+
+// =============================================
+// MAIN APP
+// =============================================
+function App(){
+const[activeSection,setActiveSection]=useState('cover');
+const[completedSections,setCompletedSections]=useState(()=>{
+try{const s=localStorage.getItem('aomt-complete-progress');return s?new Set(JSON.parse(s)):new Set();}catch(e){return new Set();}
+});
+const[glossaryOpen,setGlossaryOpen]=useState(false);
+const[sidebarOpen,setSidebarOpen]=useState(false);
+
+// Save progress
+useEffect(()=>{
+localStorage.setItem('aomt-complete-progress',JSON.stringify(Array.from(completedSections)));
+},[completedSections]);
+
+// Scroll tracking
+useEffect(()=>{
+const handleScroll=()=>{
+const els=SECTIONS.map(s=>document.getElementById(s.id)).filter(Boolean);
+const scrollPos=window.scrollY+120;
+for(let i=els.length-1;i>=0;i--){
+if(els[i].offsetTop<=scrollPos){setActiveSection(SECTIONS[i].id);break;}
+}};
+window.addEventListener('scroll',handleScroll);
+return()=>window.removeEventListener('scroll',handleScroll);
+},[]);
+
+const markComplete=(id)=>{setCompletedSections(prev=>new Set([...prev,id]));};
+const progress=Math.round((completedSections.size/SECTIONS.length)*100);
+const scrollTo=(id)=>{setActiveSection(id);setSidebarOpen(false);document.getElementById(id)?.scrollIntoView({behavior:'smooth'});};
+
+const currentIdx=SECTIONS.findIndex(s=>s.id===activeSection);
+const currentSection=SECTIONS[currentIdx]||SECTIONS[0];
+const prevSection=currentIdx>0?SECTIONS[currentIdx-1]:null;
+const nextSection=currentIdx<SECTIONS.length-1?SECTIONS[currentIdx+1]:null;
+
+let lastPhase='';
+
+return(
+<div className="app-layout">
+<button className="mobile-toggle" onClick={()=>setSidebarOpen(!sidebarOpen)}>&#9776;</button>
+<div className={`sidebar-overlay ${sidebarOpen?'open':''}`} onClick={()=>setSidebarOpen(false)}/>
+
+{/* SIDEBAR */}
+<nav className={`sidebar ${sidebarOpen?'open':''}`}>
+<div className="sidebar-header">
+<div className="sidebar-logo">SSA & Company</div>
+<div className="sidebar-title">AOMT Playbook</div>
+<div className="sidebar-subtitle">Complete Training Guide | 66 Pages</div>
+</div>
+<div className="sidebar-progress">
+<div className="progress-label"><span>Progress</span><span>{progress}%</span></div>
+<div className="progress-bar-bg"><div className="progress-bar-fill" style={{width:`${progress}%`}}/></div>
+</div>
+<div className="sidebar-nav">
+{SECTIONS.map((s,idx)=>{
+const showPhase=s.phase!==lastPhase;
+if(showPhase)lastPhase=s.phase;
+return(<React.Fragment key={s.id}>
+{showPhase&&<div className="nav-phase">{s.phase}</div>}
+<div className={`nav-item ${activeSection===s.id?'active':''}`} onClick={()=>scrollTo(s.id)}>
+<div className={`nav-dot ${completedSections.has(s.id)?'completed':''} ${activeSection===s.id?'active':''}`}>
+{completedSections.has(s.id)?'✓':idx+1}
+</div>
+<div className="nav-label">{s.title}</div>
+</div>
+</React.Fragment>);
+})}
+</div>
+<div className="nav-footer">
+{prevSection&&<button className="nav-prev" onClick={()=>scrollTo(prevSection.id)}>&#8592; Prev</button>}
+{nextSection&&<button className="nav-next" onClick={()=>scrollTo(nextSection.id)}>Next &#8594;</button>}
+</div>
+</nav>
+
+{/* MAIN CONTENT */}
+<main className="main-content">
+<div className="top-bar">
+<div className="breadcrumb-bar">
+<div className="breadcrumb-tab phase">AOMT PLAYBOOK</div>
+<div className="breadcrumb-tab section">{currentSection.phase}</div>
+<div className="breadcrumb-tab active-section">{currentSection.title}</div>
+<div className="breadcrumb-tab chapter">Pages {currentSection.pages}</div>
+</div>
+</div>
+
+<div className="hero" id="hero-top">
+<div className="hero-eyebrow">Complete Training Guide | February 2026</div>
+<h1>Agentic Operating Model Transformation Playbook</h1>
+<p>A comprehensive guide for practitioners leveraging AI capabilities to facilitate new ways of working. Covering all 66 pages of the AOMT methodology.</p>
+<div className="hero-stats">
+<div className="hero-stat"><div className="hero-stat-num">66</div><div className="hero-stat-label">Pages</div></div>
+<div className="hero-stat"><div className="hero-stat-num">{SECTIONS.length}</div><div className="hero-stat-label">Sections</div></div>
+<div className="hero-stat"><div className="hero-stat-num">{GLOSSARY.length}</div><div className="hero-stat-label">Glossary Terms</div></div>
+<div className="hero-stat"><div className="hero-stat-num">{completedSections.size}</div><div className="hero-stat-label">Completed</div></div>
+</div>
+</div>
+
+<div className="content-area">
+{SECTIONS.map((s)=>{
+const ContentComponent=CONTENT_MAP[s.id];
+if(!ContentComponent)return null;
+return(
+<section key={s.id} id={s.id} className="section-block">
+<div className="phase-label">{s.phase} | Pages {s.pages}</div>
+<h2 className="section-title">{s.title}</h2>
+<ContentComponent/>
+{!completedSections.has(s.id)?
+<button className="complete-btn" onClick={()=>markComplete(s.id)}>&#10003; Mark Section Complete</button>:
+<button className="complete-btn done">&#10003; Completed</button>
+}
+</section>
+);
+})}
+
+<div className="footer">
+<div className="footer-logo">SSA & Company</div>
+<p>Confidential & Proprietary | February 2026</p>
+<p style={{marginTop:'8px',fontSize:'12px'}}>AOMT Playbook Complete Training Guide | All 66 Pages</p>
+</div>
+</div>
+</main>
+
+{/* GLOSSARY */}
+<button className="glossary-btn" onClick={()=>setGlossaryOpen(!glossaryOpen)} title="Open Glossary">
+{glossaryOpen?'&#10005;':'G'}
+</button>
+<GlossaryPanel isOpen={glossaryOpen} onClose={()=>setGlossaryOpen(false)}/>
+</div>
+);
+}
+
+ReactDOM.render(<App/>,document.getElementById('root'));
+</script>
+</body>
+</html>
