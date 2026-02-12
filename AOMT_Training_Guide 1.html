@@ -1,0 +1,1817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AOMT Training Guide | AI-Powered Operations</title>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+  :root {
+    --blue-deep: #003399;
+    --blue-med: #0A7CC1;
+    --teal: #0088A1;
+    --teal-dark: #336179;
+    --gray-blue: #8CA3B2;
+    --green: #186037;
+    --orange: #DE4702;
+    --bg: #F7F8FB;
+    --bg-card: #FFFFFF;
+    --bg-sidebar: #0B1D3A;
+    --text-primary: #1A2332;
+    --text-secondary: #4A5568;
+    --text-muted: #718096;
+    --border: #E2E8F0;
+    --blue-5: rgba(0,51,153,0.05);
+    --blue-10: rgba(0,51,153,0.10);
+    --blue-15: rgba(0,51,153,0.15);
+    --teal-5: rgba(0,136,161,0.06);
+    --teal-10: rgba(0,136,161,0.10);
+    --orange-5: rgba(222,71,2,0.05);
+    --orange-10: rgba(222,71,2,0.10);
+    --green-5: rgba(24,96,55,0.05);
+    --green-10: rgba(24,96,55,0.10);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+
+  body {
+    font-family: 'Avenir Next LT Pro', 'Avenir Next', 'Avenir', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.65;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--gray-blue); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--teal-dark); }
+
+  /* Layout */
+  .app-layout { display: flex; min-height: 100vh; }
+
+  /* Sidebar */
+  .sidebar {
+    width: 280px;
+    min-width: 280px;
+    background: var(--bg-sidebar);
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar-header {
+    padding: 24px 20px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .sidebar-logo {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 4px;
+  }
+
+  .sidebar-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.3;
+  }
+
+  .sidebar-progress {
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .progress-bar-bg {
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal), var(--blue-med));
+    border-radius: 2px;
+    transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .progress-label {
+    font-size: 12px;
+    color: var(--gray-blue);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .sidebar-nav { padding: 12px 0; flex: 1; overflow-y: auto; }
+
+  .nav-phase {
+    padding: 8px 20px 4px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-top: 8px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 8px 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+    gap: 10px;
+  }
+
+  .nav-item:hover { background: rgba(255,255,255,0.04); }
+
+  .nav-item.active {
+    background: rgba(0,136,161,0.12);
+    border-left-color: var(--teal);
+  }
+
+  .nav-dot {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.3);
+    margin-top: 2px;
+    transition: all 0.3s;
+  }
+
+  .nav-dot.completed {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: #fff;
+  }
+
+  .nav-dot.active {
+    border-color: var(--teal);
+    color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(0,136,161,0.2);
+  }
+
+  .nav-label {
+    font-size: 13px;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.4;
+    transition: color 0.2s;
+  }
+
+  .nav-item.active .nav-label { color: #fff; font-weight: 600; }
+  .nav-item:hover .nav-label { color: rgba(255,255,255,0.8); }
+
+  /* Main content */
+  .main-content {
+    margin-left: 280px;
+    flex: 1;
+    min-height: 100vh;
+  }
+
+  /* Top bar */
+  .top-bar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(247,248,251,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0;
+  }
+
+  .breadcrumb-bar {
+    display: flex;
+    height: 36px;
+    overflow: hidden;
+  }
+
+  .breadcrumb-tab {
+    padding: 0 16px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    transition: all 0.2s;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .breadcrumb-tab.phase {
+    background: var(--blue-deep);
+    color: rgba(255,255,255,0.9);
+  }
+
+  .breadcrumb-tab.section {
+    background: var(--teal-dark);
+    color: rgba(255,255,255,0.85);
+  }
+
+  .breadcrumb-tab.active-section {
+    background: var(--teal);
+    color: #fff;
+  }
+
+  .breadcrumb-tab.chapter {
+    background: var(--blue-med);
+    color: #fff;
+    margin-left: auto;
+  }
+
+  /* Hero */
+  .hero {
+    background: linear-gradient(135deg, var(--bg-sidebar) 0%, var(--teal-dark) 50%, var(--blue-deep) 100%);
+    padding: 64px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 60%;
+    height: 200%;
+    background: radial-gradient(ellipse, rgba(0,136,161,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--teal), transparent);
+  }
+
+  .hero-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 12px;
+  }
+
+  .hero h1 {
+    font-size: 36px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.15;
+    margin-bottom: 16px;
+    max-width: 600px;
+  }
+
+  .hero p {
+    font-size: 16px;
+    color: var(--gray-blue);
+    max-width: 560px;
+    line-height: 1.6;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 32px;
+    margin-top: 32px;
+  }
+
+  .hero-stat {
+    text-align: center;
+  }
+
+  .hero-stat-num {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--teal);
+  }
+
+  .hero-stat-label {
+    font-size: 11px;
+    color: var(--gray-blue);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 2px;
+  }
+
+  /* Content sections */
+  .content-area { padding: 0 48px 80px; max-width: 920px; }
+
+  .section-block {
+    margin-top: 48px;
+    scroll-margin-top: 60px;
+  }
+
+  .phase-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 8px;
+    padding: 4px 12px;
+    background: var(--teal-5);
+    border-radius: 4px;
+  }
+
+  .section-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--blue-deep);
+    line-height: 1.2;
+    margin-bottom: 16px;
+    letter-spacing: -0.3px;
+  }
+
+  .section-intro {
+    font-size: 15.5px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 32px;
+    max-width: 780px;
+  }
+
+  /* Step headers */
+  .step-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 40px 0 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--blue-15);
+  }
+
+  .step-number {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    border-radius: 50%;
+    background: var(--blue-deep);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .step-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--blue-deep);
+  }
+
+  /* Subsection headers */
+  .sub-header {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--teal-dark);
+    margin: 28px 0 12px;
+    padding-left: 12px;
+    border-left: 3px solid var(--teal);
+  }
+
+  .sub-header-sm {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 20px 0 8px;
+  }
+
+  /* Prompt blocks */
+  .prompt-block {
+    background: linear-gradient(135deg, var(--blue-5), rgba(10,124,193,0.04));
+    border: 1px solid var(--blue-15);
+    border-left: 4px solid var(--blue-deep);
+    border-radius: 0 8px 8px 0;
+    padding: 16px 20px;
+    margin: 12px 0 16px;
+    position: relative;
+  }
+
+  .prompt-label {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    font-style: italic;
+    color: var(--blue-deep);
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+
+  .prompt-text {
+    font-size: 14px;
+    color: var(--text-primary);
+    line-height: 1.6;
+    font-style: italic;
+  }
+
+  /* AI Insight */
+  .ai-insight {
+    background: linear-gradient(135deg, var(--teal-5), rgba(10,124,193,0.03));
+    border: 1px solid var(--teal-10);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    position: relative;
+  }
+
+  .ai-insight::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--teal), var(--blue-med));
+    border-radius: 8px 8px 0 0;
+  }
+
+  .ai-insight-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .ai-insight p { font-size: 14px; color: var(--text-secondary); line-height: 1.65; }
+
+  /* Verify box */
+  .verify-box {
+    background: var(--orange-5);
+    border: 1px solid var(--orange-10);
+    border-left: 4px solid var(--orange);
+    border-radius: 0 8px 8px 0;
+    padding: 16px 20px;
+    margin: 16px 0;
+  }
+
+  .verify-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .verify-box p { font-size: 14px; color: var(--text-secondary); line-height: 1.65; }
+
+  /* Common Mistake */
+  .mistake-box {
+    background: rgba(222,71,2,0.03);
+    border: 1px solid rgba(222,71,2,0.08);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 16px 0;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .mistake-icon {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    border-radius: 50%;
+    background: var(--orange);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 800;
+    margin-top: 1px;
+  }
+
+  .mistake-box p { font-size: 14px; color: var(--text-secondary); line-height: 1.55; }
+  .mistake-box strong { color: var(--orange); }
+
+  /* Bad vs Good comparison */
+  .compare-block { margin: 16px 0; display: flex; gap: 0; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+
+  .compare-side {
+    flex: 1;
+    padding: 16px 18px;
+  }
+
+  .compare-bad { background: rgba(222,71,2,0.04); border-right: 1px solid var(--border); }
+  .compare-good { background: var(--green-5); }
+
+  .compare-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .compare-bad .compare-label { color: var(--orange); }
+  .compare-good .compare-label { color: var(--green); }
+
+  .compare-side p { font-size: 13.5px; color: var(--text-secondary); line-height: 1.55; }
+
+  /* Tables */
+  .table-wrap {
+    margin: 16px 0;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+
+  th {
+    background: var(--blue-deep);
+    color: #fff;
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.3px;
+  }
+
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+  }
+
+  tr:nth-child(even) td { background: var(--blue-5); }
+  tr:last-child td { border-bottom: none; }
+
+  /* Checklist */
+  .checklist { margin: 16px 0; }
+
+  .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 6px 0;
+    font-size: 14px;
+    color: var(--text-secondary);
+    cursor: pointer;
+  }
+
+  .check-box {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+    transition: all 0.2s;
+  }
+
+  .check-box.checked {
+    background: var(--green);
+    border-color: var(--green);
+    color: #fff;
+  }
+
+  /* Exercise blocks */
+  .exercise-block {
+    background: var(--bg-card);
+    border: 2px solid var(--blue-med);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 24px 0;
+    position: relative;
+  }
+
+  .exercise-badge {
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    background: var(--blue-med);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    border-radius: 12px;
+  }
+
+  .exercise-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--blue-deep);
+    margin: 8px 0 12px;
+  }
+
+  .exercise-content { font-size: 14px; color: var(--text-secondary); line-height: 1.65; }
+  .exercise-content ol, .exercise-content ul { padding-left: 20px; margin: 8px 0; }
+  .exercise-content li { margin: 6px 0; }
+
+  .reveal-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+    padding: 10px 20px;
+    background: var(--blue-deep);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+
+  .reveal-btn:hover { background: var(--blue-med); transform: translateY(-1px); }
+
+  .stop-line {
+    background: linear-gradient(90deg, var(--orange), var(--blue-med));
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 6px;
+    margin: 16px 0;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .answer-block {
+    margin-top: 16px;
+    padding: 16px 20px;
+    background: var(--green-5);
+    border: 1px solid var(--green-10);
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    animation: fadeIn 0.4s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Sample AI response */
+  .sample-ai {
+    background: #f8f9fa;
+    border: 1px dashed var(--gray-blue);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 12px 0;
+    font-style: italic;
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* Section complete button */
+  .complete-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 24px;
+    padding: 12px 24px;
+    background: var(--green);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+
+  .complete-btn:hover { background: #1a7a42; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(24,96,55,0.3); }
+
+  .complete-btn.done {
+    background: var(--gray-blue);
+    cursor: default;
+  }
+
+  .complete-btn.done:hover { transform: none; box-shadow: none; }
+
+  /* Body text helpers */
+  .body-text { font-size: 14.5px; color: var(--text-secondary); line-height: 1.7; margin: 8px 0; }
+  .body-text strong { color: var(--text-primary); }
+  .body-text em { color: var(--teal-dark); }
+
+  .context-example { margin: 12px 0; }
+
+  /* Quote block - for context examples */
+  .quote-block {
+    background: var(--blue-5);
+    border-left: 4px solid var(--blue-med);
+    padding: 14px 18px;
+    margin: 12px 0;
+    border-radius: 0 6px 6px 0;
+    font-size: 14px;
+    color: var(--text-primary);
+    line-height: 1.6;
+  }
+
+  /* Bullet list */
+  .bullet-list { padding-left: 20px; margin: 8px 0; }
+  .bullet-list li { margin: 6px 0; font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+  .bullet-list li strong { color: var(--text-primary); }
+
+  /* Numbered items */
+  .numbered-item {
+    display: flex;
+    gap: 12px;
+    margin: 8px 0;
+    align-items: flex-start;
+  }
+
+  .num-badge {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    border-radius: 50%;
+    background: var(--blue-deep);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+  }
+
+  /* Divider */
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), var(--blue-15), var(--border));
+    margin: 40px 0;
+  }
+
+  /* Metro Cable callout */
+  .metro-callout {
+    background: var(--blue-5);
+    border: 1px solid var(--blue-10);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 12px 0;
+  }
+
+  .metro-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--blue-deep);
+    margin-bottom: 4px;
+  }
+
+  .metro-callout p { font-size: 13.5px; color: var(--text-secondary); line-height: 1.6; }
+
+  /* Agile cycle */
+  .cycle-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin: 16px 0;
+  }
+
+  .cycle-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    text-align: center;
+    transition: all 0.2s;
+  }
+
+  .cycle-card:hover {
+    border-color: var(--teal);
+    box-shadow: 0 2px 8px rgba(0,136,161,0.1);
+  }
+
+  .cycle-freq {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 4px;
+  }
+
+  .cycle-desc { font-size: 12.5px; color: var(--text-secondary); line-height: 1.45; }
+
+  /* Mobile toggle */
+  .mobile-toggle {
+    display: none;
+    position: fixed;
+    top: 8px;
+    left: 8px;
+    z-index: 200;
+    width: 40px;
+    height: 40px;
+    background: var(--bg-sidebar);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 99;
+  }
+
+  @media (max-width: 900px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .sidebar-overlay.open { display: block; }
+    .mobile-toggle { display: flex; }
+    .main-content { margin-left: 0; }
+    .content-area { padding: 0 20px 60px; }
+    .hero { padding: 48px 20px; }
+    .compare-block { flex-direction: column; }
+    .cycle-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+
+// ── Section definitions ──
+const SECTIONS = [
+  { id: 'generate', title: 'Generate Solutions', phase: 1, short: 'Generate' },
+  { id: 'develop', title: 'Develop Solution Options', phase: 1, short: 'Develop' },
+  { id: 'validate', title: 'Validate & Evaluate', phase: 1, short: 'Validate' },
+  { id: 'select', title: 'Select & Prepare for Phase 2', phase: 1, short: 'Select' },
+  { id: 'govern', title: 'Solution Governance', phase: 3, short: 'Governance' },
+  { id: 'monitor', title: 'Monitor & Sustain', phase: 3, short: 'Monitor' },
+  { id: 'ownership', title: 'Sustainment Ownership', phase: 3, short: 'Ownership' },
+];
+
+// ── Reusable Components ──
+
+function PromptBlock({ label, children }) {
+  return (
+    <div className="prompt-block">
+      <div className="prompt-label">{label || 'Prompt'}</div>
+      <div className="prompt-text">{children}</div>
+    </div>
+  );
+}
+
+function AIInsight({ children }) {
+  return (
+    <div className="ai-insight">
+      <div className="ai-insight-label">&#9672; AI Insight</div>
+      <div>{children}</div>
+    </div>
+  );
+}
+
+function VerifyBox({ children }) {
+  return (
+    <div className="verify-box">
+      <div className="verify-label">&#9888; Verify</div>
+      <div>{children}</div>
+    </div>
+  );
+}
+
+function CommonMistake({ children }) {
+  return (
+    <div className="mistake-box">
+      <div className="mistake-icon">!</div>
+      <div>{children}</div>
+    </div>
+  );
+}
+
+function BadGood({ bad, good }) {
+  return (
+    <div className="compare-block">
+      <div className="compare-side compare-bad">
+        <div className="compare-label">&#10007; Bad</div>
+        <p>{bad}</p>
+      </div>
+      <div className="compare-side compare-good">
+        <div className="compare-label">&#10003; Good</div>
+        <p>{good}</p>
+      </div>
+    </div>
+  );
+}
+
+function Exercise({ title, children, answer }) {
+  const [show, setShow] = useState(false);
+  return (
+    <div className="exercise-block">
+      <div className="exercise-badge">Exercise</div>
+      <div className="exercise-title">{title}</div>
+      <div className="exercise-content">{children}</div>
+      <div className="stop-line">Stop and attempt this before reading further.</div>
+      {!show && <button className="reveal-btn" onClick={() => setShow(true)}>Reveal Answer &#8595;</button>}
+      {show && <div className="answer-block">{answer}</div>}
+    </div>
+  );
+}
+
+function MetroCallout({ children }) {
+  return (
+    <div className="metro-callout">
+      <div className="metro-label">Metro Cable Example</div>
+      {children}
+    </div>
+  );
+}
+
+// ── Main Section Content Components ──
+
+function SectionGenerate() {
+  return (<>
+    <div className="section-intro">
+      AI broadens the range of solutions beyond what individual experience typically produces. Given specific operational data and constraints, it draws from patterns across industries and problem types to suggest approaches that might not surface in a team brainstorm alone. The risk is that without structured prompting, AI defaults to generic recommendations. The Context + Task + Output prompt structure prevents that by requiring specific data, explicit constraints, and defined output formats at the input stage.
+    </div>
+
+    <div className="step-header"><div className="step-number">1</div><div className="step-title">Build Your Prompt (Context + Task + Output)</div></div>
+
+    <div className="sub-header">Part A: Provide CONTEXT (your validated findings)</div>
+    <p className="body-text">Include both quantitative gaps AND qualitative themes. This grounds AI in your specific situation. Don't give AI generic problems — give it YOUR problem with YOUR data.</p>
+
+    <PromptBlock label="Context Example">
+      13 techs serve 6,000 customers. Avg 17.95 mi/call (range: 11.61–47.8 mi). 4 zones (Blue Springs, Grandview, Lee's Summit, Olathe) have 1,449 customers but zero local techs. Interviews: 87% cite geographic mismatch, 75% inconsistent workflow (batch vs. one-at-a-time), 62% emergencies disrupt schedule. Quote: "I live in KC, serve Lee's Summit 25 mi away."
+    </PromptBlock>
+
+    <AIInsight><p>The more specific your context, the better AI's suggestions. Include constraints too: <em>"We can't change dispatch system for 6 months"</em> or <em>"Union contract limits tech autonomy."</em> This prevents unrealistic solutions.</p></AIInsight>
+
+    <BadGood
+      bad={`"Our technicians travel too much. How can we fix this?" — No data, no constraints. AI will give generic advice applicable to any company.`}
+      good="The example above — specific numbers, named locations, interview percentages, direct quotes. AI can only be as specific as the input you give it."
+    />
+
+    <div className="sub-header">Part B: Specify the TASK</div>
+    <p className="body-text">Tell AI exactly what you want: number of solutions, complexity range, specific angles to explore. Don't say "generate solutions" — say "generate 5 solutions ranging from no-tech quick wins to transformational investments."</p>
+
+    <PromptBlock label="Task Example">
+      Generate 5 solutions ranging from simple process changes (no tech) to transformational investments. Address both routing logic AND technician autonomy. Consider: technology changes, process redesign, policy changes, organizational changes.
+    </PromptBlock>
+
+    <div className="sub-header">Part C: Define OUTPUT format</div>
+    <p className="body-text">Request structured output. This makes iteration easier. If you don't specify format, AI will give you paragraphs that are hard to compare and refine.</p>
+
+    <PromptBlock label="Output Format Example">
+      For each: name, description (what changes, who's affected, how it works), how it addresses the validated problem, complexity (Low/Medium/High), key risks. Ask any questions before proceeding.
+    </PromptBlock>
+
+    <AIInsight><p>Use this full prompt structure even for follow-up questions. When iterating, paste the original context again so AI remembers your specific situation. Otherwise it reverts to generic advice.</p></AIInsight>
+
+    <AIInsight><p>AI models have a finite <strong>context window</strong> — the total amount of text they can hold in a single conversation before earlier content starts being forgotten or degraded. If you're pasting 8 full interview transcripts into one thread, summarize each to key quotes and themes first; raw transcripts will exhaust the context faster than they improve the output. Start a new conversation when you switch to a substantially different task (e.g., moving from solution development to user story writing) rather than continuing a thread that has accumulated pages of prior output. Finally, do not paste confidential employee data, PII, or anything covered by NDA into a commercial AI tool without checking your organization's AI use policy — what you input may be used for model training depending on the platform and your agreement terms.</p></AIInsight>
+
+    <div className="section-divider" />
+
+    <div className="step-header"><div className="step-number">2</div><div className="step-title">Review, Challenge, and Validate</div></div>
+
+    <div className="sub-header">Challenge generic responses</div>
+    <p className="body-text">AI often starts generic. Push it to be specific to your industry, company, and constraints. Don't accept "improve communication" — ask HOW specifically.</p>
+
+    <ul className="bullet-list">
+      <li>If output is too generic: <em>"Make these specific to cable/telecom field service with 50 union technicians. Include union considerations."</em></li>
+      <li>If benefits seem inflated: <em>"You estimated 30% improvement. What assumptions drive that? Show the math. What if adoption is only 50%?"</em></li>
+      <li>If it ignores a constraint: <em>"We can't change dispatch for 6 months. Revise options to work within current dispatch system."</em></li>
+    </ul>
+
+    <AIInsight><p>When AI suggests something that sounds good but vague (e.g., "better training"), ask: <em>"What specific training? Who delivers it? What behavior should change afterward?"</em> Force AI to think through implementation.</p></AIInsight>
+
+    <BadGood
+      bad={`"Can you make this better?" — AI will polish the language without fixing substance.`}
+      good={`"You estimated 30% improvement. What assumptions drive that? Show the math. What if adoption is only 50%?" — Forces AI to defend or revise its claims with specifics.`}
+    />
+
+    <div className="sub-header">Validate suggestions against your data</div>
+    <p className="body-text">This is critical. AI doesn't know your data — it's suggesting based on general patterns. Make it reconcile suggestions with your actual findings.</p>
+
+    <PromptBlock label="Validation Prompt">
+      You suggested "hire more techs." But our data shows 1:461 tech-to-customer ratio (within industry standard). Real issue: 4 zones with 1,449 customers but zero local techs. Why hire more when problem is geographic distribution, not headcount? Ask any questions before proceeding.
+    </PromptBlock>
+
+    <AIInsight><p>If AI doubles down on a suggestion you're skeptical about, ask: <em>"What evidence from my data supports this? What contradicts it?"</em> This forces AI to show its reasoning against YOUR situation, not generic best practices.</p></AIInsight>
+
+    <div className="sub-header">Select 3-5 options to develop further</div>
+    <p className="body-text">You'll rarely use all AI suggestions. Pick a range: at least one quick win (low risk, implementable now), one transformational (high impact, requires investment), and one or two balanced middle options.</p>
+
+    <MetroCallout>
+      <ul className="bullet-list">
+        <li><strong>Quick win:</strong> One-at-a-time dispatch</li>
+        <li><strong>Middle:</strong> Zone-based home-basing (techs take trucks home)</li>
+        <li><strong>Transformational:</strong> Dynamic routing with traffic integration</li>
+      </ul>
+    </MetroCallout>
+
+    <p className="body-text"><strong>How to decide what to keep:</strong> If you cannot state in one sentence why an option addresses a validated root cause, drop it — it's either generic or you don't understand it well enough to defend it. If two options solve the same problem at different scales (e.g., manual zone assignment vs. dynamic routing), keep both; they represent a genuine trade-off that decision-makers should weigh. If an option sounds good but doesn't connect to anything in your data or interviews, it's generic advice that AI would give to any company with a travel problem.</p>
+
+    <CommonMistake><p><strong>Common Mistake:</strong> Accepting AI output without challenging it. If you can't explain WHY an option makes sense for your situation, don't include it. You own the recommendations, not AI.</p></CommonMistake>
+  </>);
+}
+
+function SectionDevelop() {
+  return (<>
+    <div className="section-intro">
+      The previous step produced a shortlist of solution ideas. Each one is a concept — a sentence or two describing an approach. That is not enough for evaluation or comparison. Before solutions can be scored in Phase 2, each needs to be developed into a fully documented option: how it works mechanically, who is affected, what it costs, what the risks are, and what measurable impact can be estimated with stated assumptions.
+    </div>
+
+    <div className="step-header"><div className="step-number">1</div><div className="step-title">Use AI to Flesh Out Each Option</div></div>
+
+    <div className="sub-header">Develop the mechanics and implementation details</div>
+    <p className="body-text">For each option, ask AI to think through HOW it works. What changes? Who does what? This reveals complexity and feasibility.</p>
+
+    <PromptBlock>Develop "zone-based home-basing" for 13 techs serving 6,000 customers: 1) How assign zones? 2) Who implements (IT, dispatch, ops)? 3) Truck assignment logistics? Ask any questions.</PromptBlock>
+
+    <AIInsight><p>If AI's answer is too abstract, ask: <em>"Walk me through a specific example. Tech gets assigned Job A, but Job B is closer. What exactly happens step-by-step?"</em> Concrete examples reveal gaps in thinking.</p></AIInsight>
+
+    <div className="sub-header">Connect benefits to validated problem</div>
+    <p className="body-text">No generic benefits. Force AI to tie each benefit to your specific gap with quantification using baseline data.</p>
+
+    <PromptBlock>Gap: 17.95 mi avg travel. 4 zones (1,449 customers) have zero local techs. List 3-4 benefits of zone-based home-basing. Estimate impact: 13 techs, 6,000 customers, 180 calls/month. Ask any questions.</PromptBlock>
+
+    <BadGood
+      bad={`"Improves efficiency" — vague, unmeasurable`}
+      good={`"Reduces avg travel from 17.95 to 12 mi by placing techs in zero-tech zones (Blue Springs, Lee's Summit), saving 6 mi × 180 calls/mo = 1,080 mi/mo"`}
+    />
+
+    <p className="body-text">Not all zones will improve equally. Blue Springs and Lee's Summit have the highest customer density among the zero-tech zones, so placing techs there should produce the largest per-zone reductions — potentially approaching the 12 mi target within weeks. Grandview's customers are spread across a wider geographic area, which means home-basing alone may produce a smaller improvement there. Establishing these per-zone expectations now gives you something specific to track in Phase 3 rather than relying on a single system-wide average that can mask underperforming zones.</p>
+
+    <div className="sub-header">Identify challenges honestly</div>
+    <p className="body-text">Don't sanitize — stakeholders will find problems. Surface them now. Ask AI for organizational, technical, and political challenges.</p>
+
+    <PromptBlock>What could go wrong with zone-based home-basing? Consider: truck custody (insurance, security), rebalancing zones (fairness), hiring for gaps (4 new techs?), truck acquisition. Ask any questions.</PromptBlock>
+
+    <p className="body-text"><strong>Note:</strong> The 4 new hires bring the total from 13 to 17 technicians. All subsequent references to "17 techs" or "17 trucks" reflect this combined headcount — 13 existing plus 4 new zone techs.</p>
+
+    <AIInsight><p>For each challenge AI identifies, immediately ask: <em>"How would we mitigate this?"</em> This turns challenges into design requirements. E.g., "Gaming risk" &rarr; "Limit to 2 overrides/day, track all changes."</p></AIInsight>
+
+    <div className="sub-header">Estimate impact with stated assumptions</div>
+    <p className="body-text">Use ranges, not point estimates. Show math and assumptions. "If X happens, then Y" format is defensible.</p>
+
+    <PromptBlock>If home-basing reduces 6 mi/call for 1,449 customers (67% of calls), annual impact? Use: 13 techs, 2,160 calls/year, $45/hr, 30 mph avg. Show math + sensitivity (50% adoption?). Ask any questions.</PromptBlock>
+
+    <AIInsight><p>Always ask for sensitivity analysis: <em>"What if adoption is half what we expect?"</em> This prevents embarrassment when reality diverges from projections. Gives you "best case / likely / worst case" scenarios.</p></AIInsight>
+
+    <VerifyBox><p>AI-generated numbers (cost savings, capacity gains, percentage improvements) require independent verification. LLMs generate text that is statistically likely to follow from the input, not text that has been verified against a database — this is why they produce confident-sounding numbers that are wrong, because the number <em>looks right</em> in context even when it isn't. LLMs perform arithmetic unreliably and will present fabricated calculations with confidence. Always check the math in a spreadsheet or calculator before putting it in front of stakeholders.</p></VerifyBox>
+
+    <div className="section-divider" />
+
+    <div className="step-header"><div className="step-number">2</div><div className="step-title">Structure for Comparison</div></div>
+
+    <div className="sub-header">Use identical structure for all options</div>
+    <p className="body-text">Every option needs the same sections in the same order for fair comparison.</p>
+
+    <div className="quote-block">
+      <strong>Template for Each Option:</strong><br/>
+      <strong>Option Name:</strong> [Short, memorable title]<br/>
+      <strong>Description:</strong> [What changes, who's affected, how — 2-3 sentences]<br/>
+      <strong>Benefits:</strong> [3-4 tied to validated problem, quantified]<br/>
+      <strong>Challenges:</strong> [2-3 real obstacles, be honest]<br/>
+      <strong>Risk Level:</strong> Low / Medium / High [explain why]<br/>
+      <strong>Expected Impact:</strong> [Range + assumptions + sensitivity]
+    </div>
+
+    <AIInsight><p>Ask AI to fill out this template for each option: <em>"Using the template above, document the Tech Override option. Be specific — no generic phrases."</em> Then review critically and iterate on vague sections.</p></AIInsight>
+
+    <div className="sub-header-sm">Rules for the option set</div>
+    <p className="body-text">Present 2-4 options. Include at least one "safe" option with low career risk.</p>
+
+    <div className="table-wrap">
+      <table>
+        <thead><tr><th>Option</th><th>Type</th><th>Scope</th><th>Expected Improvement</th><th>Timeline</th></tr></thead>
+        <tbody>
+          <tr><td><strong>A: One-at-a-Time Dispatch</strong></td><td>Quick win</td><td>Workflow change</td><td>15-20%</td><td>2-3 weeks</td></tr>
+          <tr><td><strong>B: Zone Home-Basing</strong></td><td>Moderate</td><td>Rebalance 4 zones + truck policy</td><td>30-35%</td><td>2-3 months</td></tr>
+          <tr><td><strong>C: Dynamic Routing + Traffic</strong></td><td>High investment</td><td>Real-time optimization</td><td>40-45%</td><td>6+ months</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <AIInsight><p>If one option is obviously best, ask AI: <em>"Why would someone rationally choose Option A over Option C?"</em> If there's no good answer, your options don't represent real trade-offs. Redesign the set.</p></AIInsight>
+
+    <div className="sub-header">Present genuine trade-offs</div>
+    <p className="body-text">Real trade-offs = speed vs impact, risk vs reward, cost vs capability.</p>
+
+    <PromptBlock>Review my 3 options. Genuine trade-offs or one dominates? If one is best, reframe for real choice. When favor A vs B? Ask any questions.</PromptBlock>
+
+    <CommonMistake><p><strong>Common Mistake:</strong> Making the "right" answer obvious. If C is clearly best, why show A and B? You're not presenting options — you're seeking validation for a decision you already made.</p></CommonMistake>
+
+    <div className="section-divider" />
+
+    <Exercise
+      title="Spot the Generic vs. Specific"
+      answer={<>
+        <p><strong>#2</strong> and <strong>#4</strong> are specific — they reference your data, name locations, and tie to validated themes.</p>
+        <p><strong>#1, #3, and #5</strong> are generic. Practice writing follow-up prompts that force specificity for each.</p>
+      </>}
+    >
+      <p>You prompted AI with your validated findings and received these five solution suggestions. For each, decide: is this <em>specific to your situation</em> or <em>generic advice that could apply to any company</em>? For the generic ones, write a follow-up prompt that would force AI to make it specific.</p>
+      <ol>
+        <li>"Implement route optimization software to reduce travel time"</li>
+        <li>"Assign 4 new techs to Blue Springs, Grandview, Lee's Summit, and Olathe zones based on residential proximity, reducing avg travel from 17.95 to ~12 mi for 1,449 zero-tech-zone customers"</li>
+        <li>"Improve communication between dispatch and field technicians"</li>
+        <li>"Transition from batch assignment (15 jobs at shift start) to sequential dispatch (next job assigned on completion), eliminating the backlog that 62% of techs say gets destroyed by emergencies"</li>
+        <li>"Invest in better training for technicians"</li>
+      </ol>
+    </Exercise>
+  </>);
+}
+
+function SectionValidate() {
+  return (<>
+    <div className="section-intro">
+      Developed options reflect the data and AI's analytical input, but they have not been tested against the people who will be affected by the changes. Validation interviews serve a different purpose than the diagnostic interviews conducted earlier. Diagnostic interviews asked what was broken. Validation interviews test whether the proposed solutions actually address what stakeholders described, and they surface organizational constraints — political, logistical, contractual — that do not appear in operational data.
+    </div>
+
+    <div className="step-header"><div className="step-number">1</div><div className="step-title">Validate with Stakeholder Interviews</div></div>
+
+    <p className="body-text"><strong>These are validation interviews — different from diagnostic interviews.</strong> Earlier in Phase 1, you conducted diagnostic interviews to understand the problem. Those asked <em>"What's broken? What frustrates you?"</em> Now you're testing whether your proposed solutions actually address the problems people described. The questions are different, the mindset is different, and confusing the two leads to confirmation bias.</p>
+
+    <p className="body-text"><strong>AI gives you possibilities, humans tell you what will work.</strong> AI solutions are based on patterns from millions of cases. Validation interviews test whether those patterns apply to YOUR organization, YOUR people, YOUR constraints. Conduct 8-12 interviews with affected stakeholders. Don't present the full solution — describe the problem and ask open-ended questions. Capture exact quotes.</p>
+
+    <MetroCallout><p>Interviewed 8 of 13 technicians. Asked about daily workflow, travel patterns, emergency handling. Captured verbatim quotes about driving from KC to Blue Springs, Lee's Summit, and other distant zones.</p></MetroCallout>
+
+    <div className="sub-header">Use AI to analyze pain point coverage</div>
+
+    <PromptBlock>
+      Solution: One-at-a-time dispatch + zone home-basing (techs take trucks home, assigned zones near residence). 4 new zone techs for Blue Springs, Lee's Summit, Grandview, Olathe. [paste full summary]<br/><br/>
+      Interview transcripts: [paste 8 interviews]. Analyze: 1) Pain points? 2) What addressed? 3) What NOT? 4) Score (1-10). 5) Improve how? Ask any questions before proceeding.
+    </PromptBlock>
+
+    <AIInsight><p>For complex analysis like this, breaking the request into <strong>sequential turns</strong> often produces better results than asking for everything at once. Ask first for pain point identification, review that output, then ask for scoring and gap analysis. Each turn gets AI's full attention on one task. The tradeoff is speed vs. depth — a single prompt is faster, but sequential prompts catch more nuance. When accuracy matters more than speed (and in validation, it does), favor sequential.</p></AIInsight>
+
+    <div className="quote-block">
+      <strong>AI Output Example:</strong><br/>
+      Coverage: 7/10. Addresses geographic mismatch (87% theme), reduces windshield time. NOT addressed: Emergency disruption (62% theme), batch assignment inconsistency.<br/>
+      Suggest: Add emergency buffer, transition from batch to sequential assignment.
+    </div>
+
+    <AIInsight><p>AI is excellent at pattern-matching across multiple interviews. It spots themes you'd miss manually and quantifies how well your solution covers actual pain points vs. assumed problems.</p></AIInsight>
+
+    <BadGood
+      bad={`"Does our solution look good based on these interviews?" — Leading question. AI will tell you what you want to hear.`}
+      good={`"What pain points are NOT addressed? Score coverage 1-10. How would you improve it?" — Forces AI to find gaps, not confirm your assumptions.`}
+    />
+
+    <div className="section-divider" />
+
+    <div className="sub-header">Map Stated Concerns and Adoption Barriers</div>
+    <p className="body-text"><strong>Not everyone will embrace your solution equally.</strong> AI can analyze interview language to map who expressed enthusiasm, who raised concerns, and what specific barriers were mentioned. This informs your change strategy.</p>
+
+    <PromptBlock>Our solution: [paste solution]. Interview transcripts: [paste]. Analyze: 1) What concerns did each interviewee express? 2) Group interviewees by concern type. 3) What adoption barriers to address proactively? 4) How to mitigate barriers? Ask any questions.</PromptBlock>
+
+    <div className="quote-block">
+      <strong>AI Output Example:</strong><br/>
+      <strong>Enthusiastic:</strong> Techs in KC (currently drive 25+ mi) — explicitly want local zones<br/>
+      <strong>Concerned:</strong> Tech near Olathe HQ (short commute now, worried about zone reassignment)<br/>
+      <strong>Barriers:</strong> Truck custody (insurance, overnight security policy)<br/>
+      <strong>Mitigate:</strong> Hire 4 new zone techs vs. reassigning existing (less disruption)
+    </div>
+
+    <VerifyBox><p>AI can summarize what people <em>said</em> in interviews. It cannot predict how they will <em>behave</em> during implementation. Organizational politics, personal relationships, and career incentives don't appear in transcripts. Use AI's concern mapping as input to your own judgment about champions and resisters — not as the conclusion.</p></VerifyBox>
+
+    <AIInsight><p>This analysis directly feeds your implementation plan. Start pilot with enthusiastic adopters, address stated concerns early, measure and communicate fairness. Don't wait for resistance — anticipate it.</p></AIInsight>
+
+    <div className="section-divider" />
+
+    <div className="sub-header">Refine Solutions Based on Interview Insights</div>
+    <p className="body-text">Circle back to AI with interview findings to improve your solutions before finalizing.</p>
+
+    <PromptBlock>Current solution: [paste]. Interview findings: Techs concerned about cherry-picking, emergency disruptions. How should I adjust solution to address these? Ask any questions.</PromptBlock>
+
+    <div className="quote-block">
+      <strong>AI Refinement Suggestions:</strong><br/>
+      1. Max 2 overrides/day with visibility to dispatch<br/>
+      2. Emergency buffer (15 min between jobs)<br/>
+      3. Fairness dashboard showing avg travel by tech
+    </div>
+
+    <p className="body-text">When interviewees contradict <em>each other</em> about what would work, categorize the disagreement before reacting. Is it about <strong>facts</strong> (one person has wrong information about how something works), about <strong>priorities</strong> (different roles care about different outcomes), or about <strong>feasibility</strong> (different experience levels with similar implementations)? Factual disagreements require investigation — someone is wrong and you need to find out who. Priority disagreements are useful: they inform your option set, because different options may serve different stakeholders. Feasibility disagreements mean you need to talk to whoever has actual implementation authority, not just opinions about it.</p>
+
+    <CommonMistake><p><strong>Common Mistake:</strong> Skipping interviews or treating them as validation theater. If interviews contradict your solution, the solution is wrong — not the interviews.</p></CommonMistake>
+
+    <div className="section-divider" />
+
+    <Exercise
+      title="Find the Fatal Flaw"
+      answer={<>
+        <p><strong>Option C</strong> promises the highest impact, but its core assumption — that the existing dispatch system has an API — may be wrong. If it doesn't, the timeline doubles and the cost category shifts from "High" to "Very High."</p>
+        <p>Before recommending Option C, you'd need to verify this with IT. This is why the "what could make this 2x longer" question matters. The best-looking option on paper is often the most fragile.</p>
+      </>}
+    >
+      <p>Below are three options presented to a steering committee. One looks strongest on paper but has a fatal assumption buried in it. Find it.</p>
+      <div className="table-wrap">
+        <table>
+          <thead><tr><th></th><th>A: Sequential Dispatch</th><th>B: Zone Home-Basing</th><th>C: Dynamic Routing</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Impact</strong></td><td>15-20% reduction</td><td>30-35% reduction</td><td>40-45% reduction</td></tr>
+            <tr><td><strong>Timeline</strong></td><td>2-3 weeks</td><td>2-3 months</td><td>6-9 months</td></tr>
+            <tr><td><strong>Cost</strong></td><td>Low (training only)</td><td>Medium (4 hires + 4 trucks)</td><td>High (vendor + API integration)</td></tr>
+            <tr><td><strong>Assumption</strong></td><td>Dispatch system supports one-at-a-time mode</td><td>4 qualified techs can be hired within 4 weeks</td><td>Existing dispatch system has an open API for real-time traffic integration</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </Exercise>
+  </>);
+}
+
+function SectionSelect() {
+  return (<>
+    <div className="section-intro">
+      The solution options are now validated and refined. The remaining work in Phase 1 is translating them into a format that supports Phase 2 prioritization. Note that the <strong>audience shifts here</strong>: up to this point you've been working with stakeholders and AI in analysis mode; from here forward, you're packaging for a cross-functional scoring team whose priorities are communication, comparison, and decision-making.
+    </div>
+
+    <div className="step-header"><div className="step-number">1</div><div className="step-title">Translate Solutions to Business Needs</div></div>
+
+    <p className="body-text"><strong>You can't prioritize without knowing the lift.</strong> Before WSJF scoring (Phase 2), you need a ballpark understanding of what you're asking to build. Not detailed specs — high-level business needs that tech teams can estimate from.</p>
+
+    <p className="body-text"><strong>Use agile terminology, not "requirements."</strong> Translate solutions into: Epics (high-level capabilities), User Stories (specific needs from user perspective), Acceptance Criteria (how we know it works).</p>
+
+    <PromptBlock>Convert to user stories/epics: SOLUTION: One-at-a-time dispatch (replace batch assignment). Zone home-basing (13 techs + 4 new zone techs in Blue Springs, Lee's Summit, Grandview, Olathe). Techs assigned zones near home, take trucks home, get next job when current completes. Format: "As [role], I want [capability] so that [benefit]". 3-5 epics, acceptance criteria. Ask questions.</PromptBlock>
+
+    <div className="quote-block">
+      <strong>AI Output — Epics:</strong><br/>
+      Epic 1: Sequential Job Assignment (replace batch)<br/>
+      Epic 2: Zone Rebalancing (4 new zone assignments)<br/>
+      Epic 3: Home-Based Truck Program (17 trucks)<br/>
+      Epic 4: Emergency Job Interrupt Logic
+    </div>
+
+    <div className="quote-block">
+      <strong>AI Output — User Stories (Epic 1):</strong><br/>
+      Story 1.1: As a technician, I want to receive next job after marking current complete, so emergencies don't create a 15-job backlog<br/>
+      Story 1.2: As a dispatcher, I want system to auto-assign by zone proximity, so Blue Springs customers get Blue Springs tech (not KC tech)<br/>
+      Story 1.3: As a tech, I want next job within my assigned zone, so I stay local
+    </div>
+
+    <AIInsight><p>AI understands user story format and will automatically organize by role (technician, dispatcher, customer, manager). Review the stories — if any feel vague or technical, ask AI to rewrite in business language.</p></AIInsight>
+
+    <div className="section-divider" />
+
+    <div className="step-header"><div className="step-number">2</div><div className="step-title">Add Acceptance Criteria and Estimate Effort</div></div>
+
+    <div className="sub-header">Acceptance criteria define "done"</div>
+
+    <PromptBlock>For this user story, provide acceptance criteria: Story: "As a technician, I want to receive my next job only after completing current job, so I don't have a backlog." Format as testable criteria. Ask any questions.</PromptBlock>
+
+    <div className="quote-block">
+      <strong>Acceptance Criteria Example:</strong><br/>
+      &#10003; Tech marks job "complete" in mobile app<br/>
+      &#10003; System assigns next job within 30 seconds<br/>
+      &#10003; Next job is closest available job in tech's zone<br/>
+      &#10003; If no jobs available, tech sees "standby" status<br/>
+      &#10003; Emergency jobs can interrupt (marked priority)
+    </div>
+
+    <div className="sub-header">Get rough effort estimate from AI</div>
+
+    <PromptBlock>Estimate effort: EPICS: [paste 4 epics]. CONTEXT: Cable company, 6,000 customers, 13 techs, existing dispatch system, need 4 new zone techs + 4 trucks. Provide: 1) T-shirt size, 2) Team (roles + count), 3) Timeline/phases, 4) Assumptions, 5) What could 2x timeline? Ask any questions.</PromptBlock>
+
+    <div className="quote-block">
+      <strong>Effort Estimate:</strong> Size: L (2-3 months) | Team: 1 PO, 2 devs, 1 QA, 1 ops (hiring)<br/>
+      Phase 1 (3 wk): Sequential dispatch logic | Phase 2 (4 wk): Zone rebalancing + 4 hires | Phase 3 (3 wk): Truck policy + pilot with 4 zone techs<br/>
+      <strong>2x longer if:</strong> No dispatch API, hiring delays, truck procurement issues, insurance policy changes
+    </div>
+
+    <AIInsight><p>The "what could make this 2x longer" question surfaces hidden risks. Share these with tech teams during estimation — they'll appreciate you've thought through complexity drivers.</p></AIInsight>
+
+    <VerifyBox><p>AI effort estimates are conversation starters, not numbers you put in a presentation. LLMs have no knowledge of your organization's actual velocity, vendor relationships, or hiring pipeline. Use AI output as a rough draft to bring to your technical team for real estimation.</p></VerifyBox>
+
+    <div className="section-divider" />
+
+    <div className="step-header"><div className="step-number">3</div><div className="step-title">Develop Effort Estimates for WSJF Scoring</div></div>
+
+    <PromptBlock>T-shirt size for cable co (13 techs, 6,000 customers, need 4 new zone techs): A: Sequential dispatch | B: Zone home-basing + 4 hires | C: Dynamic routing. Consider: dev, hiring, training, trucks, pilot. S=days, M=weeks, L=1-3mo, XL=3+mo. Ask any questions.</PromptBlock>
+
+    <div className="table-wrap">
+      <table>
+        <thead><tr><th>Option</th><th>Size</th><th>Details</th></tr></thead>
+        <tbody>
+          <tr><td><strong>A</strong></td><td>M</td><td>Dispatch logic change + training 13 techs, 3-4 weeks</td></tr>
+          <tr><td><strong>B</strong></td><td>L</td><td>Hire 4 zone techs + buy 4 trucks + zone redesign + training, 2-3 months</td></tr>
+          <tr><td><strong>C</strong></td><td>XL</td><td>Vendor selection + traffic API integration + 17-tech rollout, 6-9 months</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <VerifyBox><p>These T-shirt sizes are AI's best guess based on general patterns. Validate with people who have actually implemented similar changes in your organization. A "Medium" in AI's estimate could be an "XL" if your procurement process takes 3 months.</p></VerifyBox>
+
+    <div className="section-divider" />
+
+    <div className="step-header"><div className="step-number">4</div><div className="step-title">Verify Completeness and Anticipate Stakeholder Questions</div></div>
+
+    <PromptBlock>
+      Review my Phase 1 Diagnosis work for completeness:<br/>
+      PROBLEM STATEMENT: [paste] | VALIDATED GAP: [paste quant] | INTERVIEW THEMES: [paste qual] | SOLUTION OPTIONS: [paste 3-4 options]<br/>
+      Check against AOMT Phase 1 requirements: (1) Problem specific and measurable? (2) Root causes vs symptoms? (3) Data validates with benchmarks? (4) Interviews confirm? (5) Options documented? Missing or weak areas?
+    </PromptBlock>
+
+    <AIInsight><p>If AI flags something as "weak," ask: <em>"What specifically would strengthen this?"</em> Don't just note the gap — fix it before Phase 2. Stakeholders will spot the same weaknesses.</p></AIInsight>
+
+    <div className="sub-header">Phase 1 Completion Checklist</div>
+
+    <ChecklistComponent items={[
+      'Problem statement is specific and measurable',
+      'Root causes identified (not just symptoms)',
+      'Data validates opportunity with benchmarks',
+      'Interviews confirm problem is real (50%+ mention)',
+      'Quant and qual findings align and tell same story',
+      '2-4 solution options with consistent structure',
+      'Sponsor reviewed and agrees to proceed',
+    ]} />
+
+    <div className="sub-header">Anticipate stakeholder questions</div>
+    <p className="body-text">AI can role-play different stakeholder perspectives. Finance cares about ROI, Operations cares about risk, IT cares about feasibility.</p>
+
+    <PromptBlock>Presenting 3 options to execs. Role-play: (1) CFO (wants ROI), (2) VP Ops (risk-averse), (3) CIO (tech feasibility). What tough questions would each ask? [Paste 3 options]. Ask any questions before proceeding.</PromptBlock>
+
+    <AIInsight><p>After getting the questions, immediately ask AI: <em>"Draft answers to these questions using my data."</em> Then practice delivering those answers out loud. If you can't explain it clearly, refine it.</p></AIInsight>
+
+    <div className="sub-header-sm">What Happens in Phase 2 (WSJF Session)</div>
+    <ol className="bullet-list">
+      <li>Score each option: Value (1-10) + Criticality (1-10) + Risk Reduction (1-10)</li>
+      <li>Estimate Effort (use T-shirt sizes or 1-10 scale)</li>
+      <li>Calculate WSJF = (Value + Criticality + Risk) &divide; Effort</li>
+      <li>Rank by WSJF score &rarr; Highest score = highest priority</li>
+    </ol>
+
+    <CommonMistake><p><strong>Common Mistake:</strong> Rushing to Phase 2 before Phase 1 is complete. If any checklist item is unchecked, stop and fix it. Phase 2 decisions are only as good as Phase 1 validation.</p></CommonMistake>
+  </>);
+}
+
+function SectionGovern() {
+  return (<>
+    <div className="section-intro">
+      Once a solution is live, feedback begins immediately — from the people using it, the managers overseeing it, and the metrics tracking it. Governance defines how that feedback is collected, who reviews it, and how it connects to the sprint cycle so that observations become backlog items rather than unactioned complaints.
+    </div>
+
+    <div className="step-header"><div className="step-number">1</div><div className="step-title">From Implementation to Agile Governance</div></div>
+
+    <p className="body-text"><strong>Sustainment &ne; "Set It and Forget It."</strong> Traditional approach: lock the solution, monitor for variance, react when something breaks. AOMT approach: solution evolves continuously based on user feedback. Governance ensures feedback flows into sprints.</p>
+
+    <p className="body-text"><strong>Set up feedback structure BEFORE launch.</strong> Define: (1) Who gives feedback, (2) What feedback mechanisms, (3) How feedback becomes work.</p>
+
+    <MetroCallout><p>Post-launch governance: Weekly tech feedback session (15 min standup), monthly dispatch review of zone utilization, quarterly CSAT correlation to travel time changes.</p></MetroCallout>
+
+    <div className="sub-header">Use AI to design your feedback loops</div>
+
+    <PromptBlock>Design feedback/governance for zone home-basing solution: SOLUTION: 13 techs + 4 new zone techs, one-at-a-time dispatch, trucks taken home. STAKEHOLDERS: Techs (17), dispatch (2 mgrs), customers (6,000). Suggest: 1) What to measure (KPIs), 2) How often, 3) Who owns feedback review, 4) How feedback becomes sprint backlog items. Ask any questions.</PromptBlock>
+
+    <div className="quote-block">
+      <strong>AI Governance Design Output:</strong><br/>
+      <strong>KPIs:</strong> Avg miles/call (weekly), jobs/tech/day (daily), CSAT by zone (monthly), emergency interrupt rate (weekly)<br/>
+      <strong>Feedback:</strong> Weekly tech standup (15 min), bi-weekly dispatch review, monthly customer survey analysis<br/>
+      <strong>Owner:</strong> Product owner reviews all feedback, prioritizes for sprint planning<br/>
+      <strong>Backlog:</strong> Tech complaints &rarr; user stories, CSAT issues &rarr; epics, metrics drift &rarr; investigation spikes
+    </div>
+
+    <div className="section-divider" />
+
+    <div className="step-header"><div className="step-number">2</div><div className="step-title">Use AI to Analyze Feedback Continuously</div></div>
+
+    <p className="body-text"><strong>Don't wait for problems — analyze feedback proactively.</strong> Weekly or bi-weekly, feed all feedback into AI and ask for pattern analysis. Catch issues early.</p>
+
+    <PromptBlock>
+      Analyze this week's feedback for zone home-basing solution:<br/>
+      METRICS: Avg miles/call dropped from 17.95 to 13.2 (Blue Springs zone), 15.8 (Lee's Summit). Jobs/tech/day: 8.3 (up from 7.1).<br/>
+      TECH FEEDBACK: [paste 17 tech comments from standup]<br/>
+      DISPATCH FEEDBACK: [paste 2 manager comments]<br/>
+      Identify: 1) Emerging issues, 2) What's working well, 3) Suggest backlog items for next sprint.
+    </PromptBlock>
+
+    <div className="quote-block">
+      <strong>AI Feedback Analysis:</strong><br/>
+      <strong>Working well:</strong> Blue Springs/Lee's Summit zones performing (miles down 27%). Techs report "finally makes sense."<br/>
+      <strong>Emerging issue:</strong> 3 techs mention truck overnight parking concerns (apartment complexes). Grandview zone still averaging 16.2 mi (expected 12).<br/>
+      <strong>Sprint backlog:</strong> (1) Investigate Grandview zone boundaries, (2) Create truck parking policy/guidance, (3) Add parking allowance for techs without driveways
+    </div>
+
+    <AIInsight><p>AI excels at comparative analysis. Each week, ask: <em>"Compare this week's feedback to last 3 weeks. Any trends?"</em> This catches gradual degradation you'd miss looking at single snapshots.</p></AIInsight>
+
+    <BadGood
+      bad={`"Is our solution working well?" — AI will reassure you based on whatever data you give it.`}
+      good={`"What's getting worse? What emerging issues should I worry about? What would you investigate if this were your operation?" — Forces AI to look for problems, not validate success.`}
+    />
+
+    <div className="sub-header">Tie feedback analysis to sprint planning</div>
+
+    <MetroCallout><p>Every Friday: AI analyzes week's feedback &rarr; PO reviews &rarr; Top 2-3 items added to Monday sprint planning &rarr; Team commits in sprint &rarr; Implemented within 2 weeks &rarr; Measured in next feedback cycle</p></MetroCallout>
+
+    <AIInsight><p>AI understands agile cadences. It can map feedback frequency to sprint cycles. Ask: <em>"We run 2-week sprints. How should feedback timing align?"</em> AI will optimize for sprint boundaries.</p></AIInsight>
+
+    <CommonMistake><p><strong>Common Mistake:</strong> Setting up governance but not using it. If feedback doesn't become sprint work, you're just collecting data. Agile governance requires feedback &rarr; backlog &rarr; sprint &rarr; deployment cycle.</p></CommonMistake>
+  </>);
+}
+
+function SectionMonitor() {
+  return (<>
+    <div className="section-intro">
+      Governance captures qualitative feedback. Monitoring tracks quantitative performance against the baseline gap measured in Phase 1. Both are necessary because they sometimes tell different stories — stakeholder sentiment can be positive while the underlying metric is quietly drifting back toward baseline.
+    </div>
+
+    <div className="step-header"><div className="step-number">1</div><div className="step-title">Track Performance Against Baseline</div></div>
+
+    <div className="sub-header">Establish monitoring cadence and thresholds</div>
+
+    <PromptBlock>Set monitoring thresholds for zone home-basing solution: BASELINE: 17.95 mi/call. TARGET: 12 mi/call (33% reduction). Suggest: 1) Daily/weekly/monthly tracking? 2) Alert thresholds (when to investigate), 3) Success criteria (sustained for how long?), 4) Regression indicators. Ask any questions.</PromptBlock>
+
+    <div className="quote-block">
+      <strong>AI Monitoring Design:</strong><br/>
+      <strong>Track daily:</strong> Miles/call by zone (auto-logged from GPS)<br/>
+      <strong>Alert if:</strong> Any zone exceeds 14 mi avg for 3 consecutive days OR overall avg exceeds 13 mi for 1 week<br/>
+      <strong>Success:</strong> All zones sustain &lt;13 mi avg for 8 consecutive weeks<br/>
+      <strong>Regression signals:</strong> Zone creep (boundaries expanding), tech turnover, emergency rate spike
+    </div>
+
+    <BadGood
+      bad={`"Set up monitoring for our solution." — No baseline, no target, no context. AI will produce generic KPI lists.`}
+      good={`"Set monitoring thresholds for zone home-basing: BASELINE 17.95 mi/call, TARGET 12 mi/call. Alert thresholds, success criteria, regression signals." — Gives AI your specific numbers, produces output you can act on.`}
+    />
+
+    <AIInsight><p>Ask AI to help you think through what variance is normal vs. a signal of a real problem. This framing prevents alert fatigue from meaningless fluctuations while catching real drift early.</p></AIInsight>
+
+    <VerifyBox><p>AI can suggest reasonable thresholds based on general patterns, but it cannot calculate statistically valid limits from your data reliably. Use AI to frame the <em>logic</em> of your thresholds (what to watch, how often, what triggers action), then validate the specific numbers against your actual data in a spreadsheet.</p></VerifyBox>
+
+    <div className="sub-header">Use AI to analyze metric trends</div>
+
+    <PromptBlock>Analyze 8-week trend: [paste weekly avg miles/call by zone]. Target: &lt;13 mi. Current: Week 1: 12.1, Week 2: 12.3, Week 3: 12.8, Week 4: 13.1, Week 5: 13.4, Week 6: 13.2, Week 7: 13.6, Week 8: 13.8. Are we drifting? Causes? Corrective actions? Ask any questions.</PromptBlock>
+
+    <div className="quote-block">
+      <strong>AI Trend Analysis:</strong><br/>
+      <strong>Drift:</strong> Yes. 0.24 mi/week increase trend. At current rate, will exceed 14 mi by Week 12.<br/>
+      <strong>Likely cause:</strong> Zone boundary creep OR new tech in Week 4 unfamiliar with optimal routing<br/>
+      <strong>Investigate:</strong> Check Week 4 hire's performance vs. veterans. Review if zones expanded informally.<br/>
+      <strong>Corrective:</strong> Retrain new tech on zone boundaries, audit zone assignments for creep
+    </div>
+
+    <AIInsight><p>AI spots trends humans miss. Even small drift compounds — by Week 12 you could be back to baseline. Ask AI to extrapolate: <em>"If this trend continues, where will we be in 12 weeks?"</em> Enables proactive correction.</p></AIInsight>
+
+    <VerifyBox><p>The specific numbers in AI's trend analysis (e.g., "0.24 mi/week increase") may be arithmetically wrong. Plot your data in a spreadsheet to confirm the trend direction and magnitude before acting on it. Use AI for <em>interpretation</em> (what might be causing this, what to investigate), not as your calculator.</p></VerifyBox>
+
+    <div className="section-divider" />
+
+    <div className="step-header"><div className="step-number">2</div><div className="step-title">Convert Feedback into Continuous Improvement</div></div>
+
+    <div className="sub-header">Use AI to prioritize improvement opportunities</div>
+
+    <PromptBlock>Prioritize these 12 feedback items for next sprint: [paste]. CONTEXT: Original problem was 17.95 mi avg (now 13.2). Goal: sustain improvement, address adoption barriers. Rank by: 1) Impact on core metric, 2) Frequency mentioned, 3) Ease of fix. Top 3 for 2-week sprint? Ask any questions.</PromptBlock>
+
+    <div className="quote-block">
+      <strong>Priority 1:</strong> Truck parking issue (mentioned by 4 techs, easy fix: policy + $50/mo allowance)<br/>
+      <strong>Priority 2:</strong> Grandview zone boundary (avg 16.2 mi, likely zone too large, needs GIS review)<br/>
+      <strong>Priority 3:</strong> Emergency buffer time (mentioned by 3 techs, moderate fix: adjust dispatch logic)<br/>
+      <strong>Deprioritized:</strong> Mobile app UI preferences (low impact on core metric)
+    </div>
+
+    <AIInsight><p>Frame prioritization as "WSJF for feedback." AI can score each item on Value/Urgency/Risk and divide by Effort, giving you objective ranking. Prevents politics from driving backlog.</p></AIInsight>
+
+    <div className="sub-header">Quarterly: Assess solution health</div>
+    <p className="body-text">Every 90 days, ask AI for comprehensive health check: Are we sustaining improvements? New problems emerged? Original problem still solved?</p>
+
+    <div className="sub-header-sm">Agile Sustainment Cycle</div>
+    <div className="cycle-grid">
+      <div className="cycle-card"><div className="cycle-freq">Weekly</div><div className="cycle-desc">Feedback &rarr; AI analysis &rarr; Backlog items</div></div>
+      <div className="cycle-card"><div className="cycle-freq">Bi-weekly</div><div className="cycle-desc">Sprint planning &rarr; Development &rarr; Deploy</div></div>
+      <div className="cycle-card"><div className="cycle-freq">Monthly</div><div className="cycle-desc">Metrics review, trend analysis with AI</div></div>
+      <div className="cycle-card"><div className="cycle-freq">Quarterly</div><div className="cycle-desc">Solution health assessment, validate original problem stays solved</div></div>
+    </div>
+
+    <CommonMistake><p><strong>Common Mistake:</strong> Declaring victory at launch. Solutions degrade without continuous attention. Agile sustainment means solution evolves with business needs — it never "locks."</p></CommonMistake>
+
+    <div className="section-divider" />
+
+    <Exercise
+      title="Read the Drift"
+      answer={<>
+        <p><strong>Key takeaway:</strong> The trend direction matters more than any single week. Weeks 1-3 are stable around 12. Weeks 4-8 show a step change and upward drift.</p>
+        <p>Investigate what changed in Week 4 (new hire? zone boundary change? seasonal demand shift?) before the metric breaches your alert threshold.</p>
+        <p><strong>On the AI response:</strong> AI identified the trend direction correctly, but its <em>explanation</em> attributes the shift to a generic seasonal pattern rather than investigating what actually changed in your operation around Week 4. A new hire, a zone boundary adjustment, or a dispatch rule change are all more likely causes than seasonality — and all are verifiable from your records. The 0.26 mi/week figure and R&sup2; value should be checked in a spreadsheet. The recommendation to loosen the target is particularly dangerous: it treats drift as normal rather than something to diagnose and fix.</p>
+      </>}
+    >
+      <p>Here are 8 weeks of average miles/call data for a zone after implementing home-basing. The target is &lt;13 mi. What do you do?</p>
+      <div className="table-wrap">
+        <table>
+          <thead><tr><th>Week</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr></thead>
+          <tbody><tr><td><strong>Avg mi/call</strong></td><td>11.8</td><td>12.1</td><td>12.0</td><td>12.9</td><td>13.3</td><td>12.8</td><td>13.5</td><td>13.9</td></tr></tbody>
+        </table>
+      </div>
+      <ol>
+        <li>Is this normal variation or a real trend? What makes you think so?</li>
+        <li>Something changed around Week 4. What would you investigate first?</li>
+        <li>At what point would you escalate vs. continue monitoring?</li>
+        <li>Write a prompt to AI asking it to help you interpret this data. Then evaluate: what parts of AI's response would you trust, and what would you verify independently?</li>
+      </ol>
+
+      <div className="sub-header-sm" style={{marginTop: '16px'}}>Sample AI Response to Evaluate:</div>
+      <div className="sample-ai">
+        "The data shows a clear upward trend of approximately 0.26 mi/week (R&sup2; = 0.87). At this rate, you'll exceed 14 mi/call by Week 11. The most likely cause is seasonal demand — summer months typically increase travel distances by 15-20% in field service operations as customers schedule more discretionary work. I'd recommend adjusting your target to 13.5 mi for summer months and reverting to 13 mi in fall. The Week 4 spike is consistent with this seasonal pattern."
+      </div>
+      <p>5. What would you trust vs. verify in this AI response?</p>
+    </Exercise>
+  </>);
+}
+
+function SectionOwnership() {
+  return (<>
+    <div className="section-intro">
+      The governance and monitoring structures above require named owners to function after the consulting engagement ends. Assigning ownership to a department or role title is insufficient — when a specific person is not accountable for a specific action on a specific cadence, the action stops happening.
+    </div>
+
+    <div className="step-header"><div className="step-number">1</div><div className="step-title">The Accountability Question</div></div>
+
+    <p className="body-text">Feedback loops and monitoring dashboards are worthless if no one owns them. Before the consulting team disengages, every metric, every review cadence, and every escalation path needs <strong>a name attached — not a role, a person.</strong></p>
+
+    <PromptBlock>Our solution is live. We need to hand off ownership. For each element below, suggest: who should own it (role), what "owning it" means in practice (specific actions), and what happens if they stop doing it (consequence). Elements: weekly feedback review, monthly metric analysis, quarterly health assessment, sprint backlog prioritization, escalation when thresholds are breached. CONTEXT: 17 techs, 2 dispatch managers, 1 product owner, operations director as executive sponsor. Ask any questions.</PromptBlock>
+
+    <div className="sub-header">Sustainment Ownership Template</div>
+
+    <div className="table-wrap">
+      <table>
+        <thead><tr><th>Element</th><th>Owner</th><th>What They Do</th><th>Frequency</th><th>If They Stop</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Feedback collection</strong></td><td>Dispatch Manager (by name)</td><td>Runs 15-min tech standup, captures comments</td><td>Weekly</td><td>Emerging issues go undetected until metrics degrade</td></tr>
+          <tr><td><strong>Feedback analysis</strong></td><td>Product Owner</td><td>Feeds weekly comments into AI, reviews output, creates backlog items</td><td>Weekly</td><td>Backlog dries up, team works on wrong priorities</td></tr>
+          <tr><td><strong>Metric monitoring</strong></td><td>Operations Analyst</td><td>Checks zone-level miles/call dashboard, flags breaches</td><td>Daily</td><td>Drift goes unnoticed until monthly review</td></tr>
+          <tr><td><strong>Threshold escalation</strong></td><td>Dispatch Mgr &rarr; Ops Director</td><td>When any zone exceeds 14 mi avg for 3 days: investigate within 48 hrs</td><td>As triggered</td><td>Regression to baseline within 12 weeks</td></tr>
+          <tr><td><strong>Sprint prioritization</strong></td><td>Product Owner</td><td>Ranks backlog items by impact/effort, commits top 2-3 to sprint</td><td>Bi-weekly</td><td>Feedback collected but never acted on</td></tr>
+          <tr><td><strong>Quarterly health check</strong></td><td>Executive Sponsor + PO</td><td>AI-assisted review of all metrics, trends, and open issues</td><td>Quarterly</td><td>Solution degrades without strategic course correction</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <MetroCallout><p>Dispatch Manager Sarah Chen owns weekly standups and escalation. PO Mike Torres owns feedback analysis, backlog, and sprint prioritization. Ops Director James Park is executive sponsor for quarterly reviews. If Sarah or Mike leave, their replacement inherits the ownership within 1 week — not "when they get settled in."</p></MetroCallout>
+
+    <BadGood
+      bad={`"Help us transition ownership of this solution to the client team." — No specifics about what's being handed off, who's receiving it, or what "ownership" means.`}
+      good={`"For each sustainment element, define: who owns it by role, what specific actions they take, how often, and what degrades if they stop. Context: 17 techs, 2 dispatch managers, 1 PO, 1 exec sponsor." — Forces AI to be concrete about accountability.`}
+    />
+
+    <AIInsight><p>Ask AI to stress-test your ownership plan: <em>"What happens if the product owner leaves? What if the dispatch manager is on vacation for 2 weeks? Where are the single points of failure in this ownership model?"</em> Build backup plans for every critical role.</p></AIInsight>
+
+    <CommonMistake><p><strong>Common Mistake:</strong> Assigning ownership to roles instead of people. "Operations will own it" means no one owns it. Write names. When those names change, update the plan the same week.</p></CommonMistake>
+  </>);
+}
+
+// ── Checklist Component ──
+
+function ChecklistComponent({ items }) {
+  const [checked, setChecked] = useState({});
+  const toggle = (i) => setChecked(prev => ({...prev, [i]: !prev[i]}));
+
+  return (
+    <div className="checklist">
+      {items.map((item, i) => (
+        <div key={i} className="check-item" onClick={() => toggle(i)}>
+          <div className={`check-box ${checked[i] ? 'checked' : ''}`}>
+            {checked[i] && '✓'}
+          </div>
+          <span>{item}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ── Section renderer map ──
+
+const SECTION_COMPONENTS = {
+  generate: SectionGenerate,
+  develop: SectionDevelop,
+  validate: SectionValidate,
+  select: SectionSelect,
+  govern: SectionGovern,
+  monitor: SectionMonitor,
+  ownership: SectionOwnership,
+};
+
+// ── App ──
+
+function App() {
+  const [completed, setCompleted] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('aomt-completed') || '{}'); } catch { return {}; }
+  });
+  const [activeSection, setActiveSection] = useState('generate');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const sectionRefs = useRef({});
+
+  useEffect(() => {
+    localStorage.setItem('aomt-completed', JSON.stringify(completed));
+  }, [completed]);
+
+  // Intersection observer for active section
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      { rootMargin: '-80px 0px -70% 0px', threshold: 0 }
+    );
+
+    SECTIONS.forEach(s => {
+      const el = document.getElementById(s.id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const completedCount = Object.values(completed).filter(Boolean).length;
+  const progress = Math.round((completedCount / SECTIONS.length) * 100);
+
+  const toggleComplete = (id) => {
+    setCompleted(prev => ({...prev, [id]: !prev[id]}));
+  };
+
+  const scrollTo = (id) => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+    setSidebarOpen(false);
+  };
+
+  const currentSection = SECTIONS.find(s => s.id === activeSection);
+
+  return (
+    <div className="app-layout">
+      {/* Mobile toggle */}
+      <button className="mobile-toggle" onClick={() => setSidebarOpen(!sidebarOpen)}>&#9776;</button>
+      <div className={`sidebar-overlay ${sidebarOpen ? 'open' : ''}`} onClick={() => setSidebarOpen(false)} />
+
+      {/* Sidebar */}
+      <nav className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
+        <div className="sidebar-header">
+          <div className="sidebar-logo">AOMT Playbook</div>
+          <div className="sidebar-title">Training Guide</div>
+        </div>
+
+        <div className="sidebar-progress">
+          <div className="progress-label">
+            <span>Progress</span>
+            <span>{completedCount} / {SECTIONS.length} sections</span>
+          </div>
+          <div className="progress-bar-bg">
+            <div className="progress-bar-fill" style={{width: `${progress}%`}} />
+          </div>
+        </div>
+
+        <div className="sidebar-nav">
+          {[1, 3].map(phase => (
+            <React.Fragment key={phase}>
+              <div className="nav-phase">Phase {phase}: {phase === 1 ? 'Diagnosis' : 'Sustainment'}</div>
+              {SECTIONS.filter(s => s.phase === phase).map((s, i) => (
+                <div
+                  key={s.id}
+                  className={`nav-item ${activeSection === s.id ? 'active' : ''}`}
+                  onClick={() => scrollTo(s.id)}
+                >
+                  <div className={`nav-dot ${completed[s.id] ? 'completed' : ''} ${activeSection === s.id ? 'active' : ''}`}>
+                    {completed[s.id] ? '✓' : ''}
+                  </div>
+                  <span className="nav-label">{s.title}</span>
+                </div>
+              ))}
+            </React.Fragment>
+          ))}
+        </div>
+      </nav>
+
+      {/* Main content */}
+      <main className="main-content">
+        {/* Top breadcrumb bar */}
+        <div className="top-bar">
+          <div className="breadcrumb-bar">
+            <div className="breadcrumb-tab phase">
+              Phase {currentSection?.phase || 1}
+            </div>
+            <div className="breadcrumb-tab active-section">
+              {currentSection?.short || 'Generate'}
+            </div>
+            <div className="breadcrumb-tab section" style={{color: 'rgba(255,255,255,0.7)', background: 'var(--gray-blue)'}}>
+              {completedCount}/{SECTIONS.length} Complete
+            </div>
+            <div className="breadcrumb-tab chapter">
+              AI-Powered Operations
+            </div>
+          </div>
+        </div>
+
+        {/* Hero */}
+        <div className="hero">
+          <div className="hero-eyebrow">Self-Guided Training</div>
+          <h1>Using AI for Operational Problem Solving</h1>
+          <p>Work through each section at your own pace. Learn how to generate, develop, validate, and sustain solutions using AI as an analytical partner — not a decision-maker.</p>
+          <div className="hero-stats">
+            <div className="hero-stat"><div className="hero-stat-num">7</div><div className="hero-stat-label">Sections</div></div>
+            <div className="hero-stat"><div className="hero-stat-num">3</div><div className="hero-stat-label">Exercises</div></div>
+            <div className="hero-stat"><div className="hero-stat-num">20+</div><div className="hero-stat-label">Prompt Examples</div></div>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="content-area">
+          {SECTIONS.map(section => {
+            const Component = SECTION_COMPONENTS[section.id];
+            return (
+              <div key={section.id} id={section.id} className="section-block">
+                <div className="phase-label">
+                  Phase {section.phase} &mdash; {section.phase === 1 ? 'Diagnosis' : 'Sustainment'}
+                </div>
+                <div className="section-title">{section.title}</div>
+                <Component />
+                <div style={{marginTop: '32px', paddingTop: '16px', borderTop: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: '12px'}}>
+                  <button
+                    className={`complete-btn ${completed[section.id] ? 'done' : ''}`}
+                    onClick={() => toggleComplete(section.id)}
+                  >
+                    {completed[section.id] ? '✓ Section Complete' : 'Mark Section Complete'}
+                  </button>
+                  {completed[section.id] && <span style={{fontSize:'13px', color:'var(--green)'}}>Great work!</span>}
+                </div>
+              </div>
+            );
+          })}
+
+          {/* Final completion message */}
+          {completedCount === SECTIONS.length && (
+            <div style={{
+              marginTop: '48px',
+              padding: '32px',
+              background: 'linear-gradient(135deg, var(--green-5), var(--teal-5))',
+              border: '2px solid var(--green)',
+              borderRadius: '12px',
+              textAlign: 'center'
+            }}>
+              <div style={{fontSize: '28px', fontWeight: 800, color: 'var(--green)', marginBottom: '8px'}}>Training Complete</div>
+              <p style={{fontSize: '15px', color: 'var(--text-secondary)', maxWidth: '500px', margin: '0 auto'}}>
+                You've worked through all seven sections. You now have the prompt structures, validation habits, and sustainment frameworks to use AI effectively in operational problem solving.
+              </p>
+            </div>
+          )}
+        </div>
+      </main>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
