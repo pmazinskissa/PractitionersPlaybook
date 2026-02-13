@@ -1,0 +1,51 @@
+---
+title: "Issues Tree & Hypotheses"
+slug: "04-issues-tree-and-hypotheses"
+estimated_duration_minutes: 8
+order: 4
+---
+
+# Issues Tree & Hypotheses
+
+An <GlossaryTerm term="Issues Tree">Issues Tree</GlossaryTerm> decomposes a complex problem into mutually exclusive, collectively exhaustive (MECE) sub-issues. Each branch of the tree becomes a testable area of investigation, and each sub-issue generates one or more hypotheses to be validated through data analysis.
+
+## MECE Decomposition
+
+The MECE principle ensures that:
+- **Mutually Exclusive** — No overlap between branches. Each data point maps to exactly one branch.
+- **Collectively Exhaustive** — All possible causes or factors are covered. No blind spots remain.
+
+AI is particularly effective at generating initial MECE decompositions. Provide the AI with the Problem Statement and ask it to decompose the problem into 4-6 top-level branches, then 2-4 sub-branches beneath each. The practitioner then reviews, refines, and validates the structure.
+
+## Hypothesis Framework
+
+For each branch of the Issues Tree, formulate a Null Hypothesis (H0) and an Alternative Hypothesis (H1):
+
+- **H0 (Null Hypothesis):** The default assumption that no significant relationship or difference exists. Example: "Dispatch routing method has no statistically significant effect on first-visit resolution rate."
+- **H1 (Alternative Hypothesis):** The assertion that a meaningful relationship or difference does exist. Example: "AI-optimized dispatch routing improves first-visit resolution rate by at least 10 percentage points."
+
+<BeforeAfter
+  before="We think the dispatch process is broken because technicians complain about it. Let's redesign the routing system."
+  after="H0: Current dispatch routing has no significant effect on first-visit resolution. H1: Geographic clustering in dispatch reduces travel time by >15%. We will test with 6 months of dispatch data against resolution outcomes."
+  beforeLabel="Assumption-Driven"
+  afterLabel="Hypothesis-Driven"
+/>
+
+## Testing and Interpreting Results
+
+<Callout type="warning" title="Rejecting H0 Does Not Prove Causation">
+Rejecting the null hypothesis demonstrates a statistically significant relationship — it does not prove that one variable causes the other. Correlation findings must be supplemented with qualitative validation, domain expertise, and where possible, controlled testing before claiming causation.
+</Callout>
+
+## Building the Tree Iteratively
+
+Start with 3-5 top-level branches and expand as data reveals new dimensions. AI can suggest additional branches based on patterns it finds in the data, but the practitioner must validate each addition against the MECE framework to prevent overlap or gaps.
+
+| Level | Example (Metro Cable) |
+|-------|----------------------|
+| L1 Branch | Dispatch Efficiency |
+| L2 Sub-issue | Geographic routing optimization |
+| L2 Sub-issue | Technician skill-matching accuracy |
+| L1 Branch | Customer Experience |
+| L2 Sub-issue | First-call resolution rate |
+| L2 Sub-issue | Appointment window accuracy |

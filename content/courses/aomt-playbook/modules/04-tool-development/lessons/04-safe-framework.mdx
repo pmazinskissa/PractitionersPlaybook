@@ -1,0 +1,43 @@
+---
+title: "SAFe Development Methods"
+slug: "04-safe-framework"
+estimated_duration_minutes: 7
+order: 4
+---
+
+# SAFe Development Methods
+
+The <GlossaryTerm term="SAFe">Scaled Agile Framework (SAFe)</GlossaryTerm> provides a structured approach to agile delivery at enterprise scale. For AOMT engagements that involve multiple teams, complex integrations, or organization-wide deployment, SAFe offers the coordination mechanisms needed to maintain agility without chaos.
+
+## The 5-Step SAFe Process for AOMT
+
+<ProcessFlow steps={[
+  { title: "1. Define the Backlog", description: "Translate prioritized opportunities and user stories into a structured product backlog. Use WSJF scoring to sequence backlog items for maximum value delivery." },
+  { title: "2. Plan the Increment", description: "Conduct Program Increment (PI) Planning to align multiple teams on shared objectives, identify dependencies, and commit to delivery targets for the next 8-12 week increment." },
+  { title: "3. Execute Sprints", description: "Teams work in 2-week sprints, delivering working increments and conducting regular demos. Cross-team synchronization occurs through Scrum of Scrums and shared integration environments." },
+  { title: "4. Review and Adapt", description: "At the end of each Program Increment, conduct a system demo and Inspect & Adapt workshop. Assess what was delivered against plan, identify systemic impediments, and adjust the approach." },
+  { title: "5. Continuous Delivery", description: "Establish a continuous delivery pipeline that enables frequent, reliable releases to production. AI models are versioned and deployed through the same pipeline as application code." }
+]} />
+
+## The Product Owner Role
+
+<Callout type="concept" title="Product Owner as Bridge">
+The Product Owner is the critical link between the AOMT practitioner team and the development teams. They translate validated opportunities and prioritized requirements into actionable backlog items, make scope trade-off decisions within sprints, and ensure that what gets built aligns with what the diagnostic data recommends. In AOMT engagements, the Product Owner should have deep familiarity with the diagnostic findings.
+</Callout>
+
+## Key SAFe Artifacts for AOMT
+
+| Artifact | Purpose | AOMT Connection |
+|----------|---------|-----------------|
+| Product Backlog | Prioritized list of features and capabilities | Directly derived from WSJF-scored opportunity roadmap |
+| Program Board | Visual dependency map across teams | Critical for AI solutions with data pipeline, model, and UI components |
+| PI Objectives | Measurable goals for each increment | Linked to the success measures defined in the Problem Statement |
+| Iteration Metrics | Sprint-level delivery and quality metrics | Used to track velocity and predict delivery timelines |
+
+<Callout type="tip" title="Feedback Becomes Backlog">
+In SAFe, user feedback from sprint demos and production usage is systematically captured and fed back into the product backlog. This creates a virtuous cycle where every deployment generates insights that improve the next iteration. For AI solutions, this feedback loop is essential — model performance in production often reveals optimization opportunities that were not visible during development.
+</Callout>
+
+<Callout type="warning" title="Right-Size the Framework">
+SAFe is designed for large-scale, multi-team efforts. For smaller AOMT engagements with a single development team, basic Scrum or Kanban may be more appropriate. Applying SAFe to a small team adds unnecessary overhead. Match the framework to the scale of the effort.
+</Callout>

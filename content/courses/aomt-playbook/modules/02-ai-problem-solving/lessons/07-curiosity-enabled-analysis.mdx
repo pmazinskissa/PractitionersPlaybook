@@ -1,0 +1,53 @@
+---
+title: "Curiosity-Enabled Analysis"
+slug: "07-curiosity-enabled-analysis"
+estimated_duration_minutes: 7
+order: 7
+---
+
+# Curiosity-Enabled Analysis
+
+One of the most transformative aspects of AI-powered analysis is the removal of the cost barrier to curiosity. In traditional consulting, every analytical question has a time cost measured in hours or days. With AI, the marginal cost of asking one more question is nearly zero — enabling a style of analysis driven by genuine curiosity rather than budget constraints.
+
+<BeforeAfter
+  before="Analysis is planned weeks in advance. Each question requires a formal work request. Analysts build one chart at a time. Exploring a hunch takes days and must be justified to a manager. Most interesting questions go unasked because the budget doesn't allow it."
+  after="The practitioner has a thought and asks the AI immediately. Results appear in seconds. Follow-up questions chain naturally. A single analysis session can explore 20+ questions across multiple data dimensions. Curiosity is rewarded, not rationed."
+  beforeLabel="Traditional Analysis"
+  afterLabel="AI-Enabled Analysis"
+/>
+
+## The Context + Task + Output Framework
+
+To get the best results from AI analysis, structure your prompts using three components:
+
+1. **Context** — Provide the AI with the relevant background. What data is loaded? What has been found so far? What is the overall objective?
+
+2. **Task** — Clearly state what you want the AI to do. Be specific about the analytical method, the variables involved, and any constraints.
+
+3. **Output** — Describe the format you want the results in. A table? A visualization? A narrative summary? Specify the level of detail.
+
+<Callout type="concept" title="Prompt Structure Example">
+**Context:** "We have 14 months of Metro Cable dispatch data loaded. Previous analysis showed that first-visit resolution varies significantly by service zone."
+
+**Task:** "Perform a correlation analysis between technician certification level and first-visit resolution rate, controlling for travel distance and job complexity."
+
+**Output:** "Present results as a correlation matrix with p-values, followed by a plain-language interpretation of statistically significant relationships."
+</Callout>
+
+## Chaining Analysis Questions
+
+The most powerful insights come from chaining questions — where the answer to one question immediately prompts the next:
+
+- "What is the average resolution rate by zone?" leads to
+- "Which zones are below the 70th percentile?" leads to
+- "Do underperforming zones share any common characteristics?" leads to
+- "Is technician experience level correlated with zone performance?"
+
+<Callout type="tip" title="Follow the Thread">
+Do not pre-plan your entire analysis sequence. Start with a broad question, interpret the results, and let your curiosity guide the next question. AI makes this exploratory approach not just possible but optimal.
+</Callout>
+
+<ReflectionPrompt
+  question="Think of a dataset you work with regularly. If you could ask AI any 5 questions about that data with instant results, what would your first question be? What follow-up question might the answer spark?"
+  answer="The most effective first question is often broad and exploratory: 'What are the key patterns and anomalies in this data?' From there, follow-up questions naturally emerge based on what surprises you. The key insight is that you don't need to plan — let curiosity guide the sequence."
+/>

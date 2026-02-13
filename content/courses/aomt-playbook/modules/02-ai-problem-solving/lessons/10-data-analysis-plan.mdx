@@ -1,0 +1,47 @@
+---
+title: "Data Analysis Plan"
+slug: "10-data-analysis-plan"
+estimated_duration_minutes: 7
+order: 10
+---
+
+# Data Analysis Plan
+
+The Data Analysis Plan is the tactical document that connects hypotheses to analytical methods. It ensures that analysis is systematic, reproducible, and traceable back to the Issues Tree. Without a plan, analysis can become unfocused exploration that consumes time without generating actionable findings.
+
+## 5 Components of the Analysis Plan
+
+Every analysis plan should include:
+
+1. **Hypothesis Reference** — Which specific hypothesis from the Issues Tree does this analysis address? Include the hypothesis ID and full statement.
+
+2. **Data Requirements** — What specific data fields, time periods, and granularity are needed? Reference the data request tracking document.
+
+3. **Analytical Method** — What statistical or analytical technique will be used? (e.g., correlation analysis, regression, time series decomposition, classification, clustering)
+
+4. **Success Criteria** — What result would confirm or reject the hypothesis? Define the threshold for statistical significance and the minimum effect size that would be operationally meaningful.
+
+5. **Output Specification** — What deliverable will this analysis produce? (e.g., a visualization, a statistical summary, a narrative finding with supporting evidence)
+
+<Callout type="tip" title="Sequential Prompting">
+Structure your AI prompts to follow the analysis plan sequentially. Start each prompt by referencing the hypothesis being tested, then specify the analytical method, then define the output format. This creates a traceable chain from hypothesis to finding that can be reviewed and audited.
+</Callout>
+
+## Building the Plan with AI
+
+AI can assist in drafting the analysis plan itself. Provide the Issues Tree and hypotheses, and ask the AI to suggest appropriate analytical methods for each hypothesis. The practitioner then reviews, adjusts based on data availability and domain knowledge, and finalizes the plan.
+
+## The Living Document Concept
+
+<Callout type="concept" title="Plans Evolve">
+The Data Analysis Plan is a living document. As initial analyses generate findings, new questions emerge that require additional analytical passes. Update the plan continuously — add new hypotheses, retire tested ones, and adjust methods based on what the data reveals. Version the plan so that stakeholders can track the evolution of the analytical approach.
+</Callout>
+
+## Example Plan Structure
+
+| # | Hypothesis | Method | Data Fields | Success Criteria |
+|---|-----------|--------|-------------|-----------------|
+| 1 | Geographic distance > 30 min reduces FCR | Logistic regression | Travel time, FCR outcome, zone | p < 0.05, OR > 1.5 |
+| 2 | Certified techs have higher FCR | Chi-square test | Certification status, FCR outcome | p < 0.05, >10pt difference |
+| 3 | Morning dispatches outperform afternoon | Time series comparison | Dispatch time, FCR, day of week | p < 0.05, >5pt difference |
+| 4 | Parts availability predicts FCR | Random forest classification | Parts inventory, job type, FCR | Accuracy > 80%, AUC > 0.75 |

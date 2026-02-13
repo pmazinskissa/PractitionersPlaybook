@@ -1,0 +1,14 @@
+title: "Playbook Overview"
+slug: "01-overview"
+description: "Introduction to the AOMT framework, its principles, and playbook structure."
+objectives:
+  - "Understand the purpose and scope of the AOMT Playbook"
+  - "Learn the two core principles: Data First and AI First"
+  - "Familiarize with the AOMT core activities and playbook structure"
+estimated_duration_minutes: 30
+lessons:
+  - "01-cover-and-overview"
+  - "02-playbook-objectives"
+  - "03-guiding-principles"
+  - "04-introducing-aomt"
+  - "05-playbook-structure"

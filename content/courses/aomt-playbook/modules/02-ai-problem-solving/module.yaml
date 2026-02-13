@@ -1,0 +1,21 @@
+title: "AI-Empowered Problem Solving"
+slug: "02-ai-problem-solving"
+description: "Leverage AI to diagnose organizational challenges and identify key opportunities through data-driven insights."
+objectives:
+  - "Structure problems using problem statements and issues trees"
+  - "Apply hypothesis testing to validate operational gaps"
+  - "Use AI for data visualization, analysis, and research"
+  - "Synthesize findings into actionable opportunities"
+estimated_duration_minutes: 75
+lessons:
+  - "01-chapter-introduction"
+  - "02-phase1-diagnosis-overview"
+  - "03-problem-statement"
+  - "04-issues-tree-and-hypotheses"
+  - "05-data-request-and-ingestion"
+  - "06-data-visualization"
+  - "07-curiosity-enabled-analysis"
+  - "08-analysis-validation"
+  - "09-ai-enabled-research"
+  - "10-data-analysis-plan"
+  - "11-opportunity-synthesis"

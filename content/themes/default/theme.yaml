@@ -1,0 +1,33 @@
+name: "Default"
+slug: "default"
+logo: "logo.svg"
+favicon: "favicon.ico"
+organization_name: "Practitioners Playbook"
+
+colors:
+  primary: "#4F46E5"
+  primary_light: "#EEF2FF"
+  primary_hover: "#6366F1"
+  secondary: "#1E1B4B"
+  accent: "#4F46E5"
+  background: "#FFFFFF"
+  surface: "#F8F9FA"
+  success: "#22C55E"
+  error: "#EF4444"
+  warning: "#F59E0B"
+  text_primary: "#1A1A2E"
+  text_secondary: "#6B7280"
+  border: "#E5E7EB"
+  link: "#4F46E5"
+
+typography:
+  heading_font: "'Inter', system-ui, -apple-system, sans-serif"
+  body_font: "'Inter', system-ui, -apple-system, sans-serif"
+  mono_font: "'JetBrains Mono', ui-monospace, monospace"
+  base_size: "16px"
+  line_height: 1.6
+
+border_radius:
+  button: "8px"
+  card: "8px"
+  input: "4px"

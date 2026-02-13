@@ -1,0 +1,33 @@
+name: "Protective Life"
+slug: "protective-life"
+logo: "logo.svg"
+favicon: "favicon.ico"
+organization_name: "Protective Life"
+
+colors:
+  primary: "#4C12A1"
+  primary_light: "#F3E8FF"
+  primary_hover: "#7D55C7"
+  secondary: "#50C3FF"
+  accent: "#5FC8D7"
+  background: "#FFFFFF"
+  surface: "#F8F8F8"
+  success: "#22C55E"
+  error: "#DA291C"
+  warning: "#F59E0B"
+  text_primary: "#000000"
+  text_secondary: "#555555"
+  border: "#E5E7EB"
+  link: "#007BBD"
+
+typography:
+  heading_font: "'FS Albert Pro-Bold', Arial, Helvetica, sans-serif"
+  body_font: "'Open Sans', Arial, Helvetica, sans-serif"
+  mono_font: "'JetBrains Mono', ui-monospace, monospace"
+  base_size: "16px"
+  line_height: 1.5
+
+border_radius:
+  button: "30px"
+  card: "8px"
+  input: "4px"

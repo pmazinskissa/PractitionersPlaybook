@@ -1,0 +1,120 @@
+@media print {
+  /* Hide navigation chrome */
+  aside,
+  nav[aria-label="Course navigation"],
+  [data-print-hide],
+  button,
+  textarea,
+  select,
+  input {
+    display: none !important;
+  }
+
+  /* Expand content to full width */
+  .max-w-prose {
+    max-width: 100% !important;
+  }
+
+  main {
+    margin: 0 !important;
+    padding: 0 1cm !important;
+    width: 100% !important;
+  }
+
+  /* Remove sidebar layout constraints */
+  .lg\:translate-x-0 {
+    display: none !important;
+  }
+
+  /* Show all hidden/reveal content */
+  [data-print-reveal] {
+    display: block !important;
+    height: auto !important;
+    opacity: 1 !important;
+    overflow: visible !important;
+  }
+
+  /* Glossary: show definitions inline */
+  [data-print-glossary]::after {
+    content: attr(data-print-glossary-definition);
+    display: inline;
+    font-style: italic;
+    font-size: 0.85em;
+    color: #666;
+  }
+
+  /* ReflectionPrompt: show answer, hide textarea */
+  [data-print-reflection] textarea {
+    display: none !important;
+  }
+
+  [data-print-reflection] .print\:block {
+    display: block !important;
+  }
+
+  /* DecisionPoint: show all outcomes */
+  [data-print-decision] .print\:block {
+    display: block !important;
+  }
+
+  /* VideoEmbed: show URL as text, hide iframe */
+  [data-print-video] iframe {
+    display: none !important;
+  }
+
+  [data-print-video] .print\:block {
+    display: block !important;
+  }
+
+  /* Hide interactive controls */
+  [data-print-hide] {
+    display: none !important;
+  }
+
+  /* LessonNav: hide prev/next buttons */
+  [data-print-hide] {
+    display: none !important;
+  }
+
+  /* Remove shadows and animations */
+  * {
+    box-shadow: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* Ensure page breaks are handled well */
+  h1, h2, h3, h4 {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  table, figure, img {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Clean borders for cards */
+  .rounded-card {
+    border: 1px solid #ddd !important;
+  }
+
+  /* Ensure text is black for printing */
+  body {
+    color: #000 !important;
+    background: #fff !important;
+  }
+
+  a {
+    color: #000 !important;
+    text-decoration: underline !important;
+  }
+
+  /* Show link URLs after anchor text */
+  article a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #666;
+    word-break: break-all;
+  }
+}
