@@ -4,7 +4,11 @@ import fs from 'fs';
 import { listCourses, getCourse, getLesson, getCourseNavTree } from '../services/content.service.js';
 import { getGlossary, searchGlossary } from '../services/glossary.service.js';
 import { getKnowledgeCheck } from '../services/knowledge-check.service.js';
+import { searchCourseContent } from '../services/search.service.js';
 import { config } from '../config/env.js';
+import { optionalAuth } from '../middleware/auth.js';
+import { getCourseProgress } from '../services/progress.service.js';
+import type { CourseNavTree } from '@playbook/shared';
 
 const router = Router();
 
@@ -14,15 +18,75 @@ router.get('/', (_req, res) => {
   res.json({ data: courses });
 });
 
-// GET /api/courses/:slug — course detail + navigation tree
-router.get('/:slug', (req, res) => {
-  const course = getCourse(req.params.slug);
+// GET /api/courses/:slug — course detail + navigation tree (with optional progress overlay)
+router.get('/:slug', optionalAuth, async (req, res) => {
+  const slug = req.params.slug as string;
+  const course = getCourse(slug);
   if (!course) {
     return res.status(404).json({ error: { message: 'Course not found' } });
   }
-  const navTree = getCourseNavTree(req.params.slug);
+  const navTree = getCourseNavTree(slug);
+
+  // Overlay user progress if authenticated
+  if (req.user && navTree) {
+    try {
+      const progress = await getCourseProgress(req.user.id, slug);
+      if (progress) {
+        overlayProgress(navTree, progress);
+      }
+    } catch (err) {
+      // Non-fatal: log and continue with default statuses
+      console.warn('[Courses] Failed to load progress overlay:', err);
+    }
+  }
+
   res.json({ data: { course, navTree } });
 });
+
+function overlayProgress(navTree: CourseNavTree, progress: import('@playbook/shared').CourseProgress): void {
+  // Build lesson lookup map: "module_slug:lesson_slug" → status
+  const lessonMap = new Map<string, string>();
+  for (const lp of progress.lessons) {
+    lessonMap.set(`${lp.module_slug}:${lp.lesson_slug}`, lp.status);
+  }
+
+  // Build KC lookup: module_slug → true
+  const kcDone = new Set<string>();
+  for (const kc of progress.knowledge_checks) {
+    kcDone.add(kc.module_slug);
+  }
+
+  let completedLessons = 0;
+
+  for (const mod of navTree.modules) {
+    let moduleHasProgress = false;
+    let allLessonsDone = true;
+
+    for (const lesson of mod.lessons) {
+      const status = lessonMap.get(`${mod.slug}:${lesson.slug}`);
+      if (status) {
+        lesson.status = status as any;
+        moduleHasProgress = true;
+        if (status === 'completed') {
+          completedLessons++;
+        } else {
+          allLessonsDone = false;
+        }
+      } else {
+        allLessonsDone = false;
+      }
+    }
+
+    // Module status: completed if KC done or all lessons done; in_progress if any started
+    if (kcDone.has(mod.slug) || (allLessonsDone && mod.lessons.length > 0)) {
+      mod.status = 'completed';
+    } else if (moduleHasProgress) {
+      mod.status = 'in_progress';
+    }
+  }
+
+  navTree.completed_lessons = completedLessons;
+}
 
 // GET /api/courses/:slug/modules/:moduleSlug/lessons/:lessonSlug — compiled MDX + metadata
 router.get('/:slug/modules/:moduleSlug/lessons/:lessonSlug', async (req, res) => {
@@ -64,6 +128,17 @@ router.get('/:slug/glossary', (req, res) => {
     ? searchGlossary(req.params.slug, query)
     : getGlossary(req.params.slug);
   res.json({ data: entries });
+});
+
+// GET /api/courses/:slug/search — content search
+router.get('/:slug/search', optionalAuth, (req, res) => {
+  const slug = req.params.slug as string;
+  const query = req.query.q as string | undefined;
+  if (!query || query.length < 2) {
+    return res.json({ data: [] });
+  }
+  const results = searchCourseContent(slug, query);
+  res.json({ data: results });
 });
 
 export default router;

@@ -1,13 +1,20 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, useMemo, type ReactNode } from 'react';
 import { useParams } from 'react-router-dom';
 import type { CourseConfig, CourseNavTree } from '@playbook/shared';
 import { api } from '../lib/api';
+
+interface ContinueLesson {
+  moduleSlug: string;
+  lessonSlug: string;
+  title: string;
+}
 
 interface CourseContextValue {
   course: CourseConfig | null;
   navTree: CourseNavTree | null;
   loading: boolean;
   error: string | null;
+  continueLesson: ContinueLesson | null;
 }
 
 const CourseContext = createContext<CourseContextValue>({
@@ -15,6 +22,7 @@ const CourseContext = createContext<CourseContextValue>({
   navTree: null,
   loading: true,
   error: null,
+  continueLesson: null,
 });
 
 export function CourseProvider({ children }: { children: ReactNode }) {
@@ -38,8 +46,33 @@ export function CourseProvider({ children }: { children: ReactNode }) {
       .finally(() => setLoading(false));
   }, [slug]);
 
+  // Compute continue lesson from navTree progress
+  const continueLesson = useMemo<ContinueLesson | null>(() => {
+    if (!navTree) return null;
+
+    // Find first in_progress lesson
+    for (const mod of navTree.modules) {
+      for (const lesson of mod.lessons) {
+        if (lesson.status === 'in_progress') {
+          return { moduleSlug: mod.slug, lessonSlug: lesson.slug, title: lesson.title };
+        }
+      }
+    }
+
+    // If none in_progress, find first not_started
+    for (const mod of navTree.modules) {
+      for (const lesson of mod.lessons) {
+        if (lesson.status === 'not_started') {
+          return { moduleSlug: mod.slug, lessonSlug: lesson.slug, title: lesson.title };
+        }
+      }
+    }
+
+    return null;
+  }, [navTree]);
+
   return (
-    <CourseContext.Provider value={{ course, navTree, loading, error }}>
+    <CourseContext.Provider value={{ course, navTree, loading, error, continueLesson }}>
       {children}
     </CourseContext.Provider>
   );

@@ -346,11 +346,16 @@ Clicking a user row opens a detail view: per-module completion status, knowledge
 The Settings tab within the admin area. Organized into sections:
 
 **AI Configuration**
-- **API key entry:** Masked input field. Stored encrypted in the database. A "Test Connection" button verifies the key is valid and the selected model responds.
-- **Model selection:** Dropdown to choose the AI provider and model (e.g., Claude Sonnet, Claude Opus, GPT-4o). Supports Claude and OpenAI APIs.
+- **API key entry:** Masked input field with an **eye icon toggle** to reveal/hide the key value. Stored encrypted in the database. A "Test Connection" button verifies the key is valid and the selected model responds, displaying latency on success.
+- **Model selection:** Dropdown to choose the AI provider and model (e.g., Claude Sonnet 4.5, Claude Opus 4.6, GPT-5, GPT-4o). Supports Claude and OpenAI APIs.
 - **Enable/disable toggle:** Controls whether AI-powered features are active across the platform. When disabled, both the AI learning assistant (F-L14) and any live AI-powered exercises (F-L12) are hidden from learners. When enabled, both use the configured API key and model.
 - **Explanatory note:** "This API key powers the AI Learning Assistant and any interactive AI exercises within courses. When disabled, learners will still see all non-AI content and exercises."
 - **Unconfigured state:** If AI is enabled but no API key is entered, the page shows a warning. Learners see a "Not yet configured" message on AI features rather than an error.
+
+**Course Configuration (Read-Only)**
+- Displays the active course's configuration from `course.yaml`: title, slug, description, estimated duration, navigation mode, AI features enabled, and completion certificate flag.
+- These values are set in the course content files and are not editable through the UI.
+- Note: "Course settings are configured in the course content files. Contact your platform administrator to change these."
 
 **OAuth Configuration (Read-Only)**
 - Displays the currently configured identity provider, issuer URL, and client ID (masked).
@@ -358,16 +363,20 @@ The Settings tab within the admin area. Organized into sections:
 - Note: "OAuth settings are configured at deployment. Contact your platform administrator to change these."
 
 **Theme**
-- Dropdown to select from available themes in the `/themes` directory. Color swatch preview for each theme. Changes apply on next page load.
+- Theme selection is configured at deployment via the `ACTIVE_THEME` environment variable and is not exposed in the admin UI. This is reserved for platform administrators (consulting team).
 
-All settings (except OAuth) persist across container restarts (stored in the database).
+All settings (except OAuth and theme) persist across container restarts (stored in the database).
 
 ### F-A05: Content Feedback
-A lightweight mechanism for content review. Each lesson has a small "Submit Feedback" button (visible only to admin-role users). Clicking it opens a text input. Feedback is stored with a reference to the specific course, module, and lesson.
+A lightweight feedback mechanism accessible to **all users** (both learners and admins). A "Share Feedback" button appears on the **course completion page** — not on individual lessons. Clicking it opens a **popup modal form** with:
+- A text area for the feedback content (required).
+- An **optional submitter name** field — allows anonymous feedback by default.
 
-The Feedback tab in the admin area shows a chronological list of all entries, filterable by module, sortable by date. Each entry shows: lesson reference, feedback text, submitter name, and date. Entries can be marked as "resolved."
+Feedback is stored with a reference to the course. The submitter name (if provided) is stored alongside the user reference.
 
-This is a development/review tool — it can be disabled for production deployments via a configuration flag.
+**Visibility:** Only admin-role users can view submitted feedback. The Feedback tab in the admin area shows a chronological list of all entries, filterable by module, sortable by date. Each entry shows: feedback text, submitter name (or "Anonymous"), and date. Entries can be marked as "resolved."
+
+This is a content review and quality improvement tool. The feedback API endpoint is accessible to all authenticated users for submission, but the listing/management endpoints remain admin-only.
 
 ## 3.3 Platform-Level Features
 
@@ -561,6 +570,7 @@ When course content is updated and the container is rebuilt/restarted:
 | module_slug | VARCHAR(100) | |
 | lesson_slug | VARCHAR(100) | |
 | feedback_text | TEXT | NOT NULL |
+| submitter_name | VARCHAR(200) | |
 | is_resolved | BOOLEAN | DEFAULT false |
 | created_at | TIMESTAMP | NOT NULL |
 

@@ -20,6 +20,7 @@ interface QuestionCardProps {
   onCheck: () => void;
   onNext: () => void;
   isLast: boolean;
+  moduleSlug: string;
 }
 
 export default function QuestionCard({
@@ -32,6 +33,7 @@ export default function QuestionCard({
   onCheck,
   onNext,
   isLast,
+  moduleSlug,
 }: QuestionCardProps) {
   const { slug } = useParams<{ slug: string }>();
   const checked = feedback !== null;
@@ -50,7 +52,7 @@ export default function QuestionCard({
       variants={springBounce}
       initial="hidden"
       animate="visible"
-      className="bg-white rounded-card border border-border shadow-elevation-1 overflow-hidden"
+      className="bg-white/70 backdrop-blur-md rounded-card border border-white/50 shadow-elevation-1 overflow-hidden"
     >
       {/* Feedback border */}
       <div className={`border-l-[6px] ${
@@ -150,7 +152,7 @@ export default function QuestionCard({
               </p>
               {question.lesson_link && (
                 <Link
-                  to={`/courses/${slug}/modules/${question.lesson_link.split('/')[0] || ''}/lessons/${question.lesson_link}`}
+                  to={`/courses/${slug}/modules/${moduleSlug}/lessons/${question.lesson_link}`}
                   className="flex items-center gap-1 text-xs text-link mt-2 hover:underline"
                 >
                   <BookOpen size={12} />

@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ClipboardCheck } from 'lucide-react';
@@ -6,6 +6,8 @@ import { pageTransition } from '../lib/animations';
 import { useKnowledgeCheck } from '../hooks/useKnowledgeCheck';
 import { useCourse } from '../context/CourseContext';
 import { QuestionCard, KnowledgeCheckSummary } from '../components/knowledge-check';
+import { GradientMesh, TopographicBg } from '../components/ui/Backgrounds';
+import { api } from '../lib/api';
 import type { KnowledgeCheckQuestion, KnowledgeCheckResult, QuestionResult } from '@playbook/shared';
 
 function checkAnswer(question: KnowledgeCheckQuestion, answer: any): boolean {
@@ -54,6 +56,8 @@ export default function KnowledgeCheckPage() {
   const [answers, setAnswers] = useState<Record<number, any>>({});
   const [feedbacks, setFeedbacks] = useState<Record<number, { correct: boolean; explanation: string }>>({});
   const [showSummary, setShowSummary] = useState(false);
+  const [courseCompleted, setCourseCompleted] = useState(false);
+  const submittedRef = useRef(false);
 
   // Scroll to top on question change
   useEffect(() => {
@@ -102,13 +106,36 @@ export default function KnowledgeCheckPage() {
     };
   }, [showSummary, questions, feedbacks]);
 
-  // Find next module slug
-  const nextModuleSlug = useMemo(() => {
+  // Submit KC results to backend when summary is shown
+  useEffect(() => {
+    if (!showSummary || !slug || !moduleSlug || !result || submittedRef.current) return;
+    submittedRef.current = true;
+
+    const submission = {
+      answers: questions.map((q, i) => ({
+        question_id: q.id,
+        selected_answer: JSON.stringify(answers[i]),
+        is_correct: feedbacks[i]?.correct || false,
+      })),
+    };
+
+    api.submitKnowledgeCheck(slug, moduleSlug, submission)
+      .then((res) => setCourseCompleted(res.courseCompleted))
+      .catch(() => {});
+  }, [showSummary, slug, moduleSlug, result, questions, answers, feedbacks]);
+
+  // Find next module info
+  const nextModule = useMemo(() => {
     if (!navTree || !moduleSlug) return undefined;
     const idx = navTree.modules.findIndex((m) => m.slug === moduleSlug);
-    return idx >= 0 && idx < navTree.modules.length - 1
-      ? navTree.modules[idx + 1].slug
-      : undefined;
+    if (idx >= 0 && idx < navTree.modules.length - 1) {
+      const next = navTree.modules[idx + 1];
+      return {
+        slug: next.slug,
+        firstLessonSlug: next.lessons[0]?.slug,
+      };
+    }
+    return undefined;
   }, [navTree, moduleSlug]);
 
   if (loading) {
@@ -139,65 +166,76 @@ export default function KnowledgeCheckPage() {
       initial="initial"
       animate="animate"
       exit="exit"
-      className="max-w-prose mx-auto px-6 py-8"
     >
-      {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center gap-2 mb-2">
-          <ClipboardCheck size={18} className="text-primary" />
-          <p className="text-xs font-bold uppercase tracking-wider text-primary">
-            Knowledge Check
-          </p>
+      {/* Mini-hero header */}
+      <section className="relative overflow-hidden">
+        <GradientMesh className="opacity-40" />
+        <div className="relative max-w-prose mx-auto px-6 pt-8 pb-6">
+          <div className="flex items-center gap-2 mb-2">
+            <ClipboardCheck size={18} className="text-primary" />
+            <p className="text-xs font-bold uppercase tracking-wider text-primary">
+              Knowledge Check
+            </p>
+          </div>
+          <h1
+            className="text-2xl sm:text-3xl font-bold text-text-primary"
+            style={{ fontFamily: 'var(--font-heading)' }}
+          >
+            {data.title}
+          </h1>
+          <p className="text-sm text-text-secondary mt-2">{data.description}</p>
         </div>
-        <h1
-          className="text-2xl sm:text-3xl font-bold text-text-primary"
-          style={{ fontFamily: 'var(--font-heading)' }}
-        >
-          {data.title}
-        </h1>
-        <p className="text-sm text-text-secondary mt-2">{data.description}</p>
-      </div>
+      </section>
 
-      {/* Progress bar */}
-      <div className="mb-6">
-        <div className="h-2 bg-surface rounded-full overflow-hidden">
-          <motion.div
-            className="h-full bg-primary rounded-full"
-            initial={{ width: 0 }}
-            animate={{
-              width: `${showSummary ? 100 : ((currentIndex + (feedbacks[currentIndex] ? 1 : 0)) / questions.length) * 100}%`
-            }}
-            transition={{ duration: 0.4, ease: 'easeOut' }}
-          />
+      {/* Content area with topo background */}
+      <div className="relative">
+        <TopographicBg />
+        <div className="relative max-w-prose mx-auto px-6 py-8">
+          {/* Progress bar */}
+          <div className="mb-6">
+            <div className="h-2 bg-surface rounded-full overflow-hidden">
+              <motion.div
+                className="h-full bg-primary rounded-full"
+                initial={{ width: 0 }}
+                animate={{
+                  width: `${showSummary ? 100 : ((currentIndex + (feedbacks[currentIndex] ? 1 : 0)) / questions.length) * 100}%`
+                }}
+                transition={{ duration: 0.4, ease: 'easeOut' }}
+              />
+            </div>
+          </div>
+
+          {/* Content */}
+          {showSummary && result ? (
+            <KnowledgeCheckSummary
+              result={result}
+              moduleSlug={moduleSlug || ''}
+              nextModuleSlug={nextModule?.slug}
+              nextModuleFirstLessonSlug={nextModule?.firstLessonSlug}
+              courseCompleted={courseCompleted}
+              questionLabels={questions.map((q) => ({
+                id: q.id,
+                lessonLink: q.lesson_link,
+                lessonLinkLabel: q.lesson_link_label,
+                questionText: q.question,
+              }))}
+            />
+          ) : currentQuestion ? (
+            <QuestionCard
+              question={currentQuestion}
+              questionNumber={currentIndex + 1}
+              totalQuestions={questions.length}
+              answer={answers[currentIndex]}
+              onAnswer={handleAnswer}
+              feedback={feedbacks[currentIndex] || null}
+              onCheck={handleCheck}
+              onNext={handleNext}
+              isLast={currentIndex === questions.length - 1}
+              moduleSlug={moduleSlug || ''}
+            />
+          ) : null}
         </div>
       </div>
-
-      {/* Content */}
-      {showSummary && result ? (
-        <KnowledgeCheckSummary
-          result={result}
-          moduleSlug={moduleSlug || ''}
-          nextModuleSlug={nextModuleSlug}
-          questionLabels={questions.map((q) => ({
-            id: q.id,
-            lessonLink: q.lesson_link,
-            lessonLinkLabel: q.lesson_link_label,
-            questionText: q.question,
-          }))}
-        />
-      ) : currentQuestion ? (
-        <QuestionCard
-          question={currentQuestion}
-          questionNumber={currentIndex + 1}
-          totalQuestions={questions.length}
-          answer={answers[currentIndex]}
-          onAnswer={handleAnswer}
-          feedback={feedbacks[currentIndex] || null}
-          onCheck={handleCheck}
-          onNext={handleNext}
-          isLast={currentIndex === questions.length - 1}
-        />
-      ) : null}
     </motion.div>
   );
 }

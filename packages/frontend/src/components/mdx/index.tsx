@@ -14,6 +14,8 @@ import ReflectionPrompt from './ReflectionPrompt';
 import DecisionPoint from './DecisionPoint';
 import VideoEmbed from './VideoEmbed';
 import DownloadResource from './DownloadResource';
+import AIExercise from './AIExercise';
+import PromptScorer from './PromptScorer';
 
 // HTML element overrides for MDX content
 function createHeading(level: 1 | 2 | 3) {
@@ -79,6 +81,8 @@ export const mdxComponents: Record<string, ComponentType<any>> = {
   DecisionPoint,
   VideoEmbed,
   DownloadResource,
+  AIExercise,
+  PromptScorer,
 
   // HTML overrides
   h1: createHeading(1),
@@ -109,4 +113,6 @@ export {
   DecisionPoint,
   VideoEmbed,
   DownloadResource,
+  AIExercise,
+  PromptScorer,
 };

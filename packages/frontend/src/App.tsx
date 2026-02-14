@@ -1,40 +1,66 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
+import { AuthProvider } from './context/AuthContext';
 import { CourseProvider } from './context/CourseContext';
 import { GlossaryProvider } from './context/GlossaryContext';
+import { AIProvider } from './context/AIContext';
+import ProtectedRoute from './components/layout/ProtectedRoute';
 import AppShell from './components/layout/AppShell';
+import LoginPage from './pages/LoginPage';
+import CourseCatalog from './pages/CourseCatalog';
 import CourseOverview from './pages/CourseOverview';
 import LessonPage from './pages/LessonPage';
 import KnowledgeCheckPage from './pages/KnowledgeCheckPage';
 import GlossaryFullPage from './pages/GlossaryFullPage';
+import CompletionPage from './pages/CompletionPage';
+import SearchPage from './pages/SearchPage';
 
 export default function App() {
   return (
     <ThemeProvider>
-      <Routes>
-        <Route path="/" element={<Navigate to="/courses/aomt-playbook" replace />} />
-        <Route
-          path="/courses/:slug"
-          element={
-            <CourseProvider>
-              <GlossaryProvider>
-                <AppShell />
-              </GlossaryProvider>
-            </CourseProvider>
-          }
-        >
-          <Route index element={<CourseOverview />} />
+      <AuthProvider>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
           <Route
-            path="modules/:moduleSlug/lessons/:lessonSlug"
-            element={<LessonPage />}
+            path="/"
+            element={
+              <ProtectedRoute>
+                <CourseCatalog />
+              </ProtectedRoute>
+            }
           />
+
+          {/* Course routes */}
           <Route
-            path="modules/:moduleSlug/knowledge-check"
-            element={<KnowledgeCheckPage />}
-          />
-          <Route path="glossary" element={<GlossaryFullPage />} />
-        </Route>
-      </Routes>
+            path="/courses/:slug"
+            element={
+              <ProtectedRoute>
+                <CourseProvider>
+                  <AIProvider>
+                    <GlossaryProvider>
+                      <AppShell />
+                    </GlossaryProvider>
+                  </AIProvider>
+                </CourseProvider>
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<CourseOverview />} />
+            <Route
+              path="modules/:moduleSlug/lessons/:lessonSlug"
+              element={<LessonPage />}
+            />
+            <Route
+              path="modules/:moduleSlug/knowledge-check"
+              element={<KnowledgeCheckPage />}
+            />
+            <Route path="glossary" element={<GlossaryFullPage />} />
+            <Route path="completion" element={<CompletionPage />} />
+            <Route path="search" element={<SearchPage />} />
+          </Route>
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

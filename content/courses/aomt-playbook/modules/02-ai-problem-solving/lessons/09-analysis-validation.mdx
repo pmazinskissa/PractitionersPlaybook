@@ -1,8 +1,8 @@
 ---
 title: "Analysis Validation"
-slug: "08-analysis-validation"
+slug: "09-analysis-validation"
 estimated_duration_minutes: 7
-order: 8
+order: 9
 ---
 
 # Analysis Validation
@@ -11,6 +11,22 @@ Every AI-generated finding must be validated before it can inform decisions. AI 
 
 <Callout type="warning" title="Hallucination Risk">
 AI models can "hallucinate" — generating confident, detailed outputs that are partially or entirely fabricated. This risk is especially high when the AI is asked to provide specific numbers, benchmarks, or industry statistics from memory. Always verify AI-generated claims against primary sources.
+</Callout>
+
+## Four Methods for Validating AI Output
+
+Teams should never rely on a single AI tool analysis for key determinations. AI outputs are inherently probabilistic — results can vary even with identical inputs. Use these four methods:
+
+1. **Multiple Runs — Same Tool** — Run the same prompt and data in separate sessions. If conclusions shift between runs, the finding is not robust enough to act on.
+
+2. **Prompt Variations** — Make slight alterations to prompt wording with the same data. Findings that hold across phrasings are more reliable than those sensitive to specific wording.
+
+3. **Cross-Tool Comparison** — Run the same prompt and data through different AI tools. Convergent findings across tools carry more weight than single-tool results.
+
+4. **Cross-Validation** — Ask a second AI tool to explicitly validate or critique the output of the first tool. This adversarial check surfaces assumptions and errors that self-review misses.
+
+<Callout type="concept" title="Metro Cable Staffing Example">
+When analyzing Metro Cable's staffing data, three separate AI runs produced different headline conclusions: "Appropriately Staffed," "Overstaffed," and "Right-Sized." However, all three runs identified the same underlying finding — inefficiencies in role distribution across zones. The consensus theme about distribution was far more reliable than the conflicting headline conclusions. This is why multiple runs matter: look for the patterns that appear consistently, not the headlines that vary.
 </Callout>
 
 ## The Validation Framework

@@ -1,11 +1,14 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Clock } from 'lucide-react';
 import { useLessonContent } from '../hooks/useLessonContent';
+import { useHeartbeat } from '../hooks/useHeartbeat';
 import { useCourse } from '../context/CourseContext';
 import LessonNav from '../components/layout/LessonNav';
+import { GradientMesh, TopographicBg } from '../components/ui/Backgrounds';
 import { pageTransition } from '../lib/animations';
+import { api } from '../lib/api';
 
 export default function LessonPage() {
   const { slug, moduleSlug, lessonSlug } = useParams<{
@@ -17,14 +20,41 @@ export default function LessonPage() {
   const { navTree } = useCourse();
   const { meta, MdxComponent, loading, error } = useLessonContent(slug, moduleSlug, lessonSlug);
 
+  // Heartbeat for time tracking
+  useHeartbeat(slug, moduleSlug, lessonSlug);
+
+  // Track current lesson in a ref so the cleanup function always has the latest values
+  const currentRef = useRef<{ courseSlug: string; lessonSlug: string; moduleSlug: string } | null>(null);
+
+  useEffect(() => {
+    if (!slug || !moduleSlug || !lessonSlug) return;
+
+    // Mark the previous lesson complete when navigating to a different lesson
+    const prev = currentRef.current;
+    if (prev && (prev.lessonSlug !== lessonSlug || prev.moduleSlug !== moduleSlug)) {
+      api.completeLesson(prev.courseSlug, prev.lessonSlug, prev.moduleSlug).catch(() => {});
+    }
+
+    currentRef.current = { courseSlug: slug, lessonSlug, moduleSlug };
+
+    // Mark the current lesson complete on unmount (navigating away to non-lesson pages, closing tab, etc.)
+    return () => {
+      const cur = currentRef.current;
+      if (cur) {
+        api.completeLesson(cur.courseSlug, cur.lessonSlug, cur.moduleSlug).catch(() => {});
+        currentRef.current = null;
+      }
+    };
+  }, [slug, moduleSlug, lessonSlug]);
+
   // Scroll to top on lesson change
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [lessonSlug]);
 
-  // Compute prev/next lessons from navTree
-  const { prevLesson, nextLesson, knowledgeCheckLink, currentIndex, totalLessons } = useMemo(() => {
-    if (!navTree) return { prevLesson: null, nextLesson: null, knowledgeCheckLink: null, currentIndex: 0, totalLessons: 0 };
+  // Compute prev/next lessons + progress info from navTree
+  const { prevLesson, nextLesson, knowledgeCheckLink, currentIndex, totalLessons, moduleTitle, moduleNumber, lessonInModule, lessonsInModule, completedLessons } = useMemo(() => {
+    if (!navTree) return { prevLesson: null, nextLesson: null, knowledgeCheckLink: null, currentIndex: 0, totalLessons: 0, moduleTitle: '', moduleNumber: 0, lessonInModule: 0, lessonsInModule: 0, completedLessons: 0 };
 
     const allLessons: { moduleSlug: string; slug: string; title: string }[] = [];
     navTree.modules.forEach((mod) => {
@@ -37,9 +67,13 @@ export default function LessonPage() {
       (l) => l.moduleSlug === moduleSlug && l.slug === lessonSlug
     );
 
+    // Module info
+    const currentMod = navTree.modules.find((m) => m.slug === moduleSlug);
+    const modIdx = navTree.modules.findIndex((m) => m.slug === moduleSlug);
+    const lessonIdx = currentMod ? currentMod.lessons.findIndex((l) => l.slug === lessonSlug) : -1;
+
     // Check if this is the last lesson in a module that has a knowledge check
     let kcLink: string | null = null;
-    const currentMod = navTree.modules.find((m) => m.slug === moduleSlug);
     if (currentMod && currentMod.has_knowledge_check) {
       const lastLesson = currentMod.lessons[currentMod.lessons.length - 1];
       if (lastLesson && lastLesson.slug === lessonSlug) {
@@ -53,6 +87,11 @@ export default function LessonPage() {
       knowledgeCheckLink: kcLink,
       currentIndex: idx + 1,
       totalLessons: allLessons.length,
+      moduleTitle: currentMod?.title || '',
+      moduleNumber: modIdx + 1,
+      lessonInModule: lessonIdx + 1,
+      lessonsInModule: currentMod?.lessons.length || 0,
+      completedLessons: navTree.completed_lessons,
     };
   }, [navTree, moduleSlug, lessonSlug, slug]);
 
@@ -89,43 +128,69 @@ export default function LessonPage() {
       initial="initial"
       animate="animate"
       exit="exit"
-      className="max-w-prose mx-auto px-6 py-8"
     >
-      {/* Lesson header */}
+      {/* Mini-hero header */}
       {meta && (
-        <div className="mb-8">
-          <p className="text-xs font-bold uppercase tracking-wider text-primary mb-2">
-            Lesson {currentIndex} of {totalLessons}
-          </p>
-          <h1
-            className="text-2xl sm:text-3xl font-bold text-text-primary"
-            style={{ fontFamily: 'var(--font-heading)' }}
-          >
-            {meta.title}
-          </h1>
-          <div className="flex items-center gap-2 mt-2 text-sm text-text-secondary">
-            <Clock size={14} />
-            <span>~{meta.estimated_duration_minutes} min</span>
+        <section className="relative overflow-hidden">
+          <GradientMesh className="opacity-40" />
+          <div className="relative max-w-prose mx-auto px-6 pt-8 pb-6">
+            {/* Module & progress context */}
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-xs font-bold uppercase tracking-wider text-primary">
+                Module {moduleNumber}: {moduleTitle}
+              </p>
+              <span className="text-xs text-text-secondary">
+                {Math.round((completedLessons / Math.max(totalLessons, 1)) * 100)}% complete
+              </span>
+            </div>
+
+            {/* Course progress bar */}
+            <div className="h-1.5 bg-surface rounded-full overflow-hidden mb-4">
+              <div
+                className="h-full bg-primary rounded-full transition-all duration-500"
+                style={{ width: `${(completedLessons / Math.max(totalLessons, 1)) * 100}%` }}
+              />
+            </div>
+
+            <p className="text-xs text-text-secondary mb-2">
+              Lesson {lessonInModule} of {lessonsInModule} in this module
+            </p>
+            <h1
+              className="text-2xl sm:text-3xl font-bold text-text-primary"
+              style={{ fontFamily: 'var(--font-heading)' }}
+            >
+              {meta.title}
+            </h1>
+            <div className="flex items-center gap-2 mt-2 text-sm text-text-secondary">
+              <Clock size={14} />
+              <span>~{meta.estimated_duration_minutes} min</span>
+            </div>
           </div>
+        </section>
+      )}
+
+      {/* Content area with topo background */}
+      <div className="relative">
+        <TopographicBg />
+        <div className="relative max-w-prose mx-auto px-6 py-8">
+          {/* MDX content */}
+          <article className="prose prose-lg max-w-none prose-headings:font-heading prose-headings:text-text-primary prose-p:text-text-secondary prose-a:text-link prose-strong:text-text-primary prose-code:text-primary prose-code:bg-primary-light prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-pre:bg-gray-900 prose-pre:text-gray-100">
+            {MdxComponent && <MdxComponent />}
+          </article>
+
+          {/* Previous/Next navigation */}
+          {slug && (
+            <LessonNav
+              courseSlug={slug}
+              prevLesson={prevLesson}
+              nextLesson={nextLesson}
+              knowledgeCheckLink={knowledgeCheckLink}
+              currentIndex={currentIndex}
+              totalLessons={totalLessons}
+            />
+          )}
         </div>
-      )}
-
-      {/* MDX content */}
-      <article className="prose prose-lg max-w-none prose-headings:font-heading prose-headings:text-text-primary prose-p:text-text-secondary prose-a:text-link prose-strong:text-text-primary prose-code:text-primary prose-code:bg-primary-light prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-pre:bg-gray-900 prose-pre:text-gray-100">
-        {MdxComponent && <MdxComponent />}
-      </article>
-
-      {/* Previous/Next navigation */}
-      {slug && (
-        <LessonNav
-          courseSlug={slug}
-          prevLesson={prevLesson}
-          nextLesson={nextLesson}
-          knowledgeCheckLink={knowledgeCheckLink}
-          currentIndex={currentIndex}
-          totalLessons={totalLessons}
-        />
-      )}
+      </div>
     </motion.div>
   );
 }

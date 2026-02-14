@@ -1,0 +1,259 @@
+import crypto from 'crypto';
+import { pool } from '../config/database.js';
+import { getCourseNavTree, listCourses } from './content.service.js';
+import type { UserWithProgress, UserDetail, DashboardMetrics } from '@playbook/shared';
+
+export async function listUsers(): Promise<UserWithProgress[]> {
+  const usersResult = await pool.query(
+    'SELECT * FROM users ORDER BY created_at DESC'
+  );
+
+  const users: UserWithProgress[] = [];
+
+  for (const row of usersResult.rows) {
+    const cpResult = await pool.query(
+      `SELECT course_slug, status, total_time_seconds, completed_at
+       FROM course_progress WHERE user_id = $1`,
+      [row.id]
+    );
+
+    users.push({
+      ...row,
+      created_at: row.created_at?.toISOString() || '',
+      last_active_at: row.last_active_at?.toISOString() || '',
+      course_progress: cpResult.rows.map((cp: any) => ({
+        course_slug: cp.course_slug,
+        status: cp.status,
+        total_time_seconds: cp.total_time_seconds || 0,
+        completed_at: cp.completed_at?.toISOString() || null,
+      })),
+    });
+  }
+
+  return users;
+}
+
+export async function getUserDetail(userId: string): Promise<UserDetail | null> {
+  const userResult = await pool.query('SELECT * FROM users WHERE id = $1', [userId]);
+  if (userResult.rows.length === 0) return null;
+
+  const user = userResult.rows[0];
+
+  const lpResult = await pool.query(
+    'SELECT module_slug, lesson_slug, status, time_spent_seconds, first_viewed_at, completed_at FROM lesson_progress WHERE user_id = $1',
+    [userId]
+  );
+
+  const kcResult = await pool.query(
+    `SELECT module_slug,
+            COUNT(*)::int as total_questions,
+            SUM(CASE WHEN is_correct THEN 1 ELSE 0 END)::int as correct_answers,
+            MAX(attempted_at) as attempted_at
+     FROM knowledge_check_results WHERE user_id = $1
+     GROUP BY module_slug`,
+    [userId]
+  );
+
+  const cpResult = await pool.query(
+    'SELECT * FROM course_progress WHERE user_id = $1',
+    [userId]
+  );
+
+  return {
+    ...user,
+    created_at: user.created_at?.toISOString() || '',
+    last_active_at: user.last_active_at?.toISOString() || '',
+    lesson_progress: lpResult.rows.map((row: any) => ({
+      module_slug: row.module_slug,
+      lesson_slug: row.lesson_slug,
+      status: row.status,
+      time_spent_seconds: row.time_spent_seconds || 0,
+      first_viewed_at: row.first_viewed_at?.toISOString() || null,
+      completed_at: row.completed_at?.toISOString() || null,
+    })),
+    knowledge_check_scores: kcResult.rows.map((row: any) => ({
+      module_slug: row.module_slug,
+      total_questions: row.total_questions,
+      correct_answers: row.correct_answers,
+      score: row.total_questions > 0 ? Math.round((row.correct_answers / row.total_questions) * 100) : 0,
+      attempted_at: row.attempted_at?.toISOString() || '',
+    })),
+    course_progress: cpResult.rows.map((cp: any) => ({
+      course_slug: cp.course_slug,
+      status: cp.status,
+      current_module_slug: cp.current_module_slug,
+      current_lesson_slug: cp.current_lesson_slug,
+      started_at: cp.started_at?.toISOString() || null,
+      completed_at: cp.completed_at?.toISOString() || null,
+      total_time_seconds: cp.total_time_seconds || 0,
+      lessons: [],
+      knowledge_checks: [],
+    })),
+  };
+}
+
+export async function updateUserRole(userId: string, role: 'learner' | 'admin'): Promise<void> {
+  await pool.query('UPDATE users SET role = $1 WHERE id = $2', [role, userId]);
+}
+
+export async function deactivateUser(userId: string): Promise<void> {
+  await pool.query('UPDATE users SET is_active = false WHERE id = $1', [userId]);
+}
+
+export async function activateUser(userId: string): Promise<void> {
+  await pool.query('UPDATE users SET is_active = true WHERE id = $1', [userId]);
+}
+
+export async function deleteUser(userId: string): Promise<void> {
+  await pool.query('DELETE FROM users WHERE id = $1', [userId]);
+}
+
+export async function preEnrollUsers(
+  entries: { name: string; email: string; role: 'learner' | 'admin' }[],
+  enrolledBy: string,
+): Promise<{ added: number; skipped: number }> {
+  let added = 0;
+  let skipped = 0;
+
+  for (const entry of entries) {
+    const email = entry.email.trim().toLowerCase();
+    if (!email || !email.includes('@')) {
+      skipped++;
+      continue;
+    }
+
+    const name = entry.name?.trim() || '';
+    const role = entry.role === 'admin' ? 'admin' : 'learner';
+
+    // Skip if user already exists
+    const existing = await pool.query(
+      'SELECT id FROM users WHERE email = $1',
+      [email]
+    );
+    if (existing.rows.length > 0) {
+      skipped++;
+      continue;
+    }
+
+    // Skip if already pre-enrolled
+    const preExisting = await pool.query(
+      'SELECT id FROM pre_enrolled_users WHERE email = $1',
+      [email]
+    );
+    if (preExisting.rows.length > 0) {
+      skipped++;
+      continue;
+    }
+
+    await pool.query(
+      'INSERT INTO pre_enrolled_users (id, email, name, role, enrolled_at, enrolled_by) VALUES ($1, $2, $3, $4, NOW(), $5)',
+      [crypto.randomUUID(), email, name, role, enrolledBy]
+    );
+    added++;
+  }
+
+  return { added, skipped };
+}
+
+export async function getDashboardMetrics(courseSlug?: string): Promise<DashboardMetrics> {
+  // Total enrolled = users + pre_enrolled_users
+  const usersCount = await pool.query('SELECT COUNT(*)::int as count FROM users');
+  const preEnrolledCount = await pool.query('SELECT COUNT(*)::int as count FROM pre_enrolled_users');
+  const totalUsers = usersCount.rows[0].count + preEnrolledCount.rows[0].count;
+
+  // Status breakdown
+  const statusResult = await pool.query(
+    `SELECT status, COUNT(*)::int as count FROM course_progress
+     ${courseSlug ? 'WHERE course_slug = $1' : ''}
+     GROUP BY status`,
+    courseSlug ? [courseSlug] : []
+  );
+  const statusMap: Record<string, number> = {};
+  for (const row of statusResult.rows) {
+    statusMap[row.status] = row.count;
+  }
+  const completed = statusMap['completed'] || 0;
+  const inProgress = statusMap['in_progress'] || 0;
+  // Not started = total users - those with any course_progress record
+  const withProgress = completed + inProgress + (statusMap['not_started'] || 0);
+  const notStarted = Math.max(0, totalUsers - withProgress) + (statusMap['not_started'] || 0);
+
+  // Average time to completion (completers only)
+  const avgTimeResult = await pool.query(
+    `SELECT COALESCE(AVG(total_time_seconds), 0)::int as avg_time FROM course_progress
+     WHERE status = 'completed' ${courseSlug ? 'AND course_slug = $1' : ''}`,
+    courseSlug ? [courseSlug] : []
+  );
+  const avgTime = avgTimeResult.rows[0].avg_time;
+
+  // Average completion % across active users (users who have started)
+  // Get total lessons from nav tree
+  const courses = listCourses();
+  const targetSlug = courseSlug || courses[0]?.slug;
+  const navTree = targetSlug ? getCourseNavTree(targetSlug) : null;
+  const totalLessons = navTree?.total_lessons || 1;
+
+  const activeUsersCount = usersCount.rows[0].count;
+
+  const avgCompResult = await pool.query(
+    `SELECT user_id, COUNT(*)::int as completed_lessons
+     FROM lesson_progress WHERE status = 'completed'
+     ${courseSlug ? 'AND course_slug = $1' : ''}
+     GROUP BY user_id`,
+    courseSlug ? [courseSlug] : []
+  );
+
+  let avgCompletionPct = 0;
+  if (avgCompResult.rows.length > 0 && activeUsersCount > 0) {
+    const totalPct = avgCompResult.rows.reduce(
+      (sum: number, row: any) => sum + (row.completed_lessons / totalLessons) * 100,
+      0
+    );
+    avgCompletionPct = Math.round(totalPct / activeUsersCount) || 0;
+  }
+
+  // Module funnel
+  const moduleFunnel: DashboardMetrics['module_funnel'] = [];
+  if (navTree) {
+    for (const mod of navTree.modules) {
+      const modResult = await pool.query(
+        `SELECT user_id FROM lesson_progress
+         WHERE module_slug = $1 AND status = 'completed'
+         ${courseSlug ? 'AND course_slug = $2' : ''}
+         GROUP BY user_id
+         HAVING COUNT(*) >= $${courseSlug ? '3' : '2'}`,
+        courseSlug
+          ? [mod.slug, courseSlug, mod.lessons.length]
+          : [mod.slug, mod.lessons.length]
+      );
+      const completedUsers = modResult.rows.length;
+      moduleFunnel.push({
+        module_slug: mod.slug,
+        module_title: mod.title,
+        completion_pct: totalUsers > 0 ? Math.round((completedUsers / totalUsers) * 100) : 0,
+      });
+    }
+  }
+
+  return {
+    total_users: totalUsers,
+    completed,
+    in_progress: inProgress,
+    not_started: notStarted,
+    avg_completion_pct: avgCompletionPct,
+    avg_time_to_completion_seconds: avgTime,
+    module_funnel: moduleFunnel,
+  };
+}
+
+export async function exportUsersCSV(): Promise<string> {
+  const users = await listUsers();
+  const header = 'Name,Email,Role,Status,Completion %,Total Time (s),Enrolled,Last Active';
+  const rows = users.map((u) => {
+    const cp = u.course_progress[0];
+    const status = cp?.status || 'not_started';
+    const totalTime = cp?.total_time_seconds || 0;
+    return `"${u.name}","${u.email}","${u.role}","${status}","","${totalTime}","${u.created_at}","${u.last_active_at}"`;
+  });
+  return [header, ...rows].join('\n');
+}

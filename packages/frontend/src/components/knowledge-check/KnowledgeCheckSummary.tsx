@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Link, useParams } from 'react-router-dom';
-import { BookOpen, ArrowRight } from 'lucide-react';
+import { BookOpen, ArrowRight, Trophy } from 'lucide-react';
 import { springBounce, fadeInUp, stagger } from '../../lib/animations';
 import type { KnowledgeCheckResult } from '@playbook/shared';
 
@@ -8,6 +8,8 @@ interface Props {
   result: KnowledgeCheckResult;
   moduleSlug: string;
   nextModuleSlug?: string;
+  nextModuleFirstLessonSlug?: string;
+  courseCompleted?: boolean;
   questionLabels: { id: string; lessonLink?: string; lessonLinkLabel?: string; questionText: string }[];
 }
 
@@ -46,7 +48,7 @@ function ScoreRing({ score }: { score: number }) {
   );
 }
 
-export default function KnowledgeCheckSummary({ result, moduleSlug, nextModuleSlug, questionLabels }: Props) {
+export default function KnowledgeCheckSummary({ result, moduleSlug, nextModuleSlug, nextModuleFirstLessonSlug, courseCompleted, questionLabels }: Props) {
   const { slug } = useParams<{ slug: string }>();
   const missed = result.results.filter((r) => !r.correct);
 
@@ -55,7 +57,7 @@ export default function KnowledgeCheckSummary({ result, moduleSlug, nextModuleSl
       variants={springBounce}
       initial="hidden"
       animate="visible"
-      className="bg-white rounded-card border border-border shadow-elevation-1 p-8"
+      className="bg-white/70 backdrop-blur-md rounded-card border border-white/50 shadow-elevation-1 p-8"
     >
       {/* Score section */}
       <div className="flex flex-col items-center text-center mb-8">
@@ -106,13 +108,21 @@ export default function KnowledgeCheckSummary({ result, moduleSlug, nextModuleSl
 
       {/* Continue button */}
       <div className="flex justify-center">
-        {nextModuleSlug ? (
+        {nextModuleSlug && nextModuleFirstLessonSlug ? (
           <Link
-            to={`/courses/${slug}/modules/${nextModuleSlug}/lessons`}
+            to={`/courses/${slug}/modules/${nextModuleSlug}/lessons/${nextModuleFirstLessonSlug}`}
             className="flex items-center gap-2 px-6 py-3 text-sm font-medium text-white bg-primary rounded-button hover:bg-primary-hover transition-colors"
           >
             Continue to Next Module
             <ArrowRight size={16} />
+          </Link>
+        ) : courseCompleted ? (
+          <Link
+            to={`/courses/${slug}/completion`}
+            className="flex items-center gap-2 px-6 py-3 text-sm font-medium text-white bg-success rounded-button hover:opacity-90 transition-opacity"
+          >
+            <Trophy size={16} />
+            View Course Completion
           </Link>
         ) : (
           <Link

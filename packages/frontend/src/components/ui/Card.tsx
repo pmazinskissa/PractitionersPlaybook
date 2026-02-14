@@ -17,7 +17,7 @@ const elevationClasses: Record<Elevation, string> = {
 export default function Card({ elevation = 1, className = '', children, ...props }: CardProps) {
   return (
     <div
-      className={`bg-white rounded-card border border-border ${elevationClasses[elevation]} ${className}`}
+      className={`bg-white/70 backdrop-blur-md rounded-card border border-white/50 ${elevationClasses[elevation]} ${className}`}
       {...props}
     >
       {children}

@@ -115,7 +115,10 @@ export function getCourseNavTree(courseSlug: string): CourseNavTree | null {
     }
 
     const lessons: NavLesson[] = mod.lessons.map((lessonSlug, lessonIndex) => ({
-      title: lessonSlug.replace(/^\d+-/, '').replace(/-/g, ' '),
+      title: lessonSlug
+        .replace(/^\d+-/, '')
+        .replace(/-/g, ' ')
+        .replace(/\b\w/g, (c) => c.toUpperCase()),
       slug: lessonSlug,
       order: lessonIndex + 1,
       estimated_duration_minutes: 5,

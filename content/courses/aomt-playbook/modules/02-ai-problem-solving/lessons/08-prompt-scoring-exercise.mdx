@@ -1,0 +1,20 @@
+---
+title: "Prompt Scoring Exercise"
+slug: "08-prompt-scoring-exercise"
+estimated_duration_minutes: 10
+order: 8
+---
+
+# Prompt Scoring Exercise
+
+Now it's your turn to practice the Context + Task + Output framework from the previous lesson. In this exercise, you'll write a prompt for a realistic AOMT scenario and receive AI-powered feedback on how well you applied each dimension of the C+T+O framework.
+
+<Callout type="tip" title="Before You Begin">
+Think back to the three components: **Context** (what data is available and what's been found so far), **Task** (the specific analytical method and variables), and **Output** (the format and level of detail you need). A strong prompt addresses all three clearly and specifically.
+</Callout>
+
+<PromptScorer
+  scenario="You are an AOMT practitioner analyzing Metro Cable's field service operations. You have completed initial data ingestion and want to investigate why certain service zones consistently underperform."
+  dataContext="14 months of dispatch records (350,000+ rows) including technician IDs, job types, resolution outcomes, travel times, and zone assignments. Also: technician certification database, geographic zone maps, and customer satisfaction surveys by zone."
+  objective="Write a prompt that uses the Context-Task-Output framework to analyze the relationship between technician travel distance and first-visit resolution rates across service zones."
+/>

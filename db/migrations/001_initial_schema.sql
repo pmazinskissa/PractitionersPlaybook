@@ -21,6 +21,8 @@ CREATE TABLE users (
 CREATE TABLE pre_enrolled_users (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     email VARCHAR(255) UNIQUE NOT NULL,
+    name VARCHAR(255),
+    role VARCHAR(20) NOT NULL DEFAULT 'learner' CHECK (role IN ('learner', 'admin')),
     enrolled_at TIMESTAMP NOT NULL DEFAULT NOW(),
     enrolled_by UUID REFERENCES users(id)
 );
@@ -65,7 +67,7 @@ CREATE TABLE knowledge_check_results (
     attempted_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
--- Content feedback from admin reviewers
+-- Content feedback from learners and admins
 CREATE TABLE content_feedback (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -73,6 +75,7 @@ CREATE TABLE content_feedback (
     module_slug VARCHAR(100),
     lesson_slug VARCHAR(100),
     feedback_text TEXT NOT NULL,
+    submitter_name VARCHAR(200),
     is_resolved BOOLEAN NOT NULL DEFAULT false,
     created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );

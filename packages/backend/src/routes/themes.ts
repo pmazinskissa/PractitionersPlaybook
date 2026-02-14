@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getActiveTheme, getThemeAssetPath } from '../services/theme.service.js';
+import { getActiveTheme, getThemeAssetPath, listThemes } from '../services/theme.service.js';
 
 const router = Router();
 
@@ -27,6 +27,16 @@ router.get('/favicon', (_req, res) => {
     res.sendFile(faviconPath);
   } else {
     res.status(404).json({ error: { message: 'Favicon not found' } });
+  }
+});
+
+// GET /api/themes — list all available themes
+router.get('/', (_req, res) => {
+  try {
+    const themes = listThemes();
+    res.json({ data: themes });
+  } catch (err) {
+    res.status(500).json({ error: { message: 'Failed to list themes' } });
   }
 });
 

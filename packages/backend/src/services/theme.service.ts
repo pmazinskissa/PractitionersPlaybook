@@ -23,3 +23,25 @@ export function getThemeAssetPath(filename: string): string | null {
 export function clearThemeCache(): void {
   cachedTheme = null;
 }
+
+export function listThemes(): ThemeConfig[] {
+  const themesDir = path.join(config.contentDir, 'themes');
+  if (!fs.existsSync(themesDir)) return [];
+
+  const entries = fs.readdirSync(themesDir, { withFileTypes: true });
+  const themes: ThemeConfig[] = [];
+
+  for (const entry of entries) {
+    if (!entry.isDirectory()) continue;
+    const yamlPath = path.join(themesDir, entry.name, 'theme.yaml');
+    if (fs.existsSync(yamlPath)) {
+      try {
+        themes.push(readYaml<ThemeConfig>(yamlPath));
+      } catch {
+        // Skip invalid theme configs
+      }
+    }
+  }
+
+  return themes;
+}
